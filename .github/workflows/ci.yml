@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  ci:
+    defaults:
+      run:
+        working-directory: adonis
+    runs-on: ubuntu-latest
+    env:
+      # Node
+      TZ: UTC
+      PORT: 3333
+      HOST: 0.0.0.0
+      NODE_ENV: development
+      LOG_LEVEL: info
+      APP_KEY: jzoOxC6MjzCyP8KpPqiTaWBi6IwuPSHf
+      APP_URL: http://0.0.0.0:3333
+      DEFAULT_DB_CONNECTION: mysql
+      SESSION_DRIVER: cookie
+
+      # MySQL
+      MYSQL_DATABASE: betalent-challenge
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PORT: 13306
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 25
+          cache: npm
+          cache-dependency-path: adonis/package-lock.json
+      - run: npm ci
+      - name: Start fake database
+        run: docker compose -f compose.yml up -d mysql
+        working-directory: adonis
+      - name: Wait for MySQL
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose -f compose.yml exec mysql mysqladmin ping -h localhost -uroot -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
+              echo "MySQL is ready"
+              exit 0
+            fi
+            echo "Waiting for MySQL ($i/30)"
+            sleep 2
+          done
+          docker compose -f compose.yml logs mysql
+          exit 1
+        working-directory: adonis
+      - name: Check formatting
+        run: npx prettier --check .
+      - name: Lint
+        run: npm run lint
+      - name: Run tests
+        run: npm run test
+      - name: Tear down fake database
+        if: always()
+        run: docker compose -f compose.yml down --volumes
+        working-directory: adonis

@@ -1,0 +1,48 @@
+services:
+  adonis:
+    build:
+      context: ./adonis
+      dockerfile: Dockerfile
+    entrypoint:
+      sh -c "
+      set -e;
+      node build/ace.js migration:run &&
+      node build/ace.js db:seed &&
+      node build/bin/server.js"
+    ports:
+      - ${API_PORT:-80}:3333
+    env_file:
+      - adonis/.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:9.6
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    environment:
+      MYSQL_DATABASE: '${MYSQL_DATABASE:-betalent-challenge}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD:-root}'
+      MYSQL_USER: '${MYSQL_USER:-user}'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD:-user_password}'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      retries: 5
+    restart: unless-stopped
+
+  gateway-mocks:
+    image: matheusprotzen/gateways-mock
+    ports:
+      - ${GATEWAY1_PORT:-3001}:3001
+      - ${GATEWAY2_PORT:-3002}:3002
+    environment:
+      - REMOVE_AUTH=${REMOVE_AUTH:-false}
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
