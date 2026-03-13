@@ -54,6 +54,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/cors/cors_provider'),
     () => import('@adonisjs/auth/auth_provider'),
+    () => import('#providers/app_provider'),
     () => import('#providers/api_provider'),
     () => import('@adonisjs/bouncer/bouncer_provider'),
   ],
@@ -111,7 +112,10 @@ export default defineConfig({
   hooks: {
     init: [
       indexEntities({
-        transformers: { enabled: true },
+        events: { enabled: true, source: 'app/domain/events', glob: ['**/*.ts'] },
+        controllers: { enabled: true, source: 'app/adapters/controllers', glob: ['**/*.ts'] },
+        listeners: { enabled: true, source: 'app/adapters/listeners', glob: ['**/*.ts'] },
+        transformers: { enabled: true, source: 'app/transformers', glob: ['**/*.ts'] },
       }),
       generateRegistry(),
       indexPolicies(),
