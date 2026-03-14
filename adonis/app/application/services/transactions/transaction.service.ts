@@ -63,7 +63,9 @@ export default class TransactionService {
     const cardNumber = CardNumber.create(input.cardNumber)
     const cvv = Cvv.create(input.cvv)
     const items = this.normalizeItems(input.items)
+    
     const products = await this.fetchProducts(items.map((item) => item.productId))
+    
     const totalAmount = ProductAmount.create(
       items.reduce((total, item) => {
         const product = products.find((candidate) => candidate.id.value === item.productId.value)!
@@ -78,6 +80,15 @@ export default class TransactionService {
     const gateways = await this.gatewayRepository.listActiveByPriority()
     if (gateways.length === 0) {
       throw new NoActiveGatewayException('No active gateway is available to process the purchase.')
+    }
+
+    for (const item of items) {
+      const product = products.find((candidate) => candidate.id.value === item.productId.value)!
+      if (product.amount.value < item.quantity.value) {
+        throw new ProductNotFoundException(
+          `Product '${product.id.value}' does not have enough quantity. Requested: ${item.quantity.value}, Available: ${product.amount.value}`
+        )
+      }
     }
 
     const draft = await this.transactionRepository.createDraftWithItems({

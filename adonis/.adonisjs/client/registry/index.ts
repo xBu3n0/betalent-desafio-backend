@@ -60,11 +60,23 @@ const routes = {
     tokens: [{"old":"/api/v1/users/:id","type":0,"val":"api","end":""},{"old":"/api/v1/users/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/users/:id","type":0,"val":"users","end":""},{"old":"/api/v1/users/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['users.users.destroy']['types'],
   },
-  'purchases.store': {
-    methods: ["POST"],
-    pattern: '/api/v1/purchases',
-    tokens: [{"old":"/api/v1/purchases","type":0,"val":"api","end":""},{"old":"/api/v1/purchases","type":0,"val":"v1","end":""},{"old":"/api/v1/purchases","type":0,"val":"purchases","end":""}],
-    types: placeholder as Registry['purchases.store']['types'],
+  'gateways.gateways.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/gateways',
+    tokens: [{"old":"/api/v1/gateways","type":0,"val":"api","end":""},{"old":"/api/v1/gateways","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways","type":0,"val":"gateways","end":""}],
+    types: placeholder as Registry['gateways.gateways.index']['types'],
+  },
+  'gateways.gateways.update_status': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/gateways/:id/status',
+    tokens: [{"old":"/api/v1/gateways/:id/status","type":0,"val":"api","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"gateways","end":""},{"old":"/api/v1/gateways/:id/status","type":1,"val":"id","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"status","end":""}],
+    types: placeholder as Registry['gateways.gateways.update_status']['types'],
+  },
+  'gateways.gateways.update_priority': {
+    methods: ["PATCH"],
+    pattern: '/api/v1/gateways/:id/priority',
+    tokens: [{"old":"/api/v1/gateways/:id/priority","type":0,"val":"api","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"gateways","end":""},{"old":"/api/v1/gateways/:id/priority","type":1,"val":"id","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"priority","end":""}],
+    types: placeholder as Registry['gateways.gateways.update_priority']['types'],
   },
   'products.products.index': {
     methods: ["GET","HEAD"],
@@ -96,23 +108,11 @@ const routes = {
     tokens: [{"old":"/api/v1/products/:id","type":0,"val":"api","end":""},{"old":"/api/v1/products/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/products/:id","type":0,"val":"products","end":""},{"old":"/api/v1/products/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['products.products.destroy']['types'],
   },
-  'gateways.gateways.index': {
-    methods: ["GET","HEAD"],
-    pattern: '/api/v1/gateways',
-    tokens: [{"old":"/api/v1/gateways","type":0,"val":"api","end":""},{"old":"/api/v1/gateways","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways","type":0,"val":"gateways","end":""}],
-    types: placeholder as Registry['gateways.gateways.index']['types'],
-  },
-  'gateways.gateways.update_status': {
-    methods: ["PATCH"],
-    pattern: '/api/v1/gateways/:id/status',
-    tokens: [{"old":"/api/v1/gateways/:id/status","type":0,"val":"api","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"gateways","end":""},{"old":"/api/v1/gateways/:id/status","type":1,"val":"id","end":""},{"old":"/api/v1/gateways/:id/status","type":0,"val":"status","end":""}],
-    types: placeholder as Registry['gateways.gateways.update_status']['types'],
-  },
-  'gateways.gateways.update_priority': {
-    methods: ["PATCH"],
-    pattern: '/api/v1/gateways/:id/priority',
-    tokens: [{"old":"/api/v1/gateways/:id/priority","type":0,"val":"api","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"v1","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"gateways","end":""},{"old":"/api/v1/gateways/:id/priority","type":1,"val":"id","end":""},{"old":"/api/v1/gateways/:id/priority","type":0,"val":"priority","end":""}],
-    types: placeholder as Registry['gateways.gateways.update_priority']['types'],
+  'purchases.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/purchases',
+    tokens: [{"old":"/api/v1/purchases","type":0,"val":"api","end":""},{"old":"/api/v1/purchases","type":0,"val":"v1","end":""},{"old":"/api/v1/purchases","type":0,"val":"purchases","end":""}],
+    types: placeholder as Registry['purchases.store']['types'],
   },
   'clients.clients.index': {
     methods: ["GET","HEAD"],
