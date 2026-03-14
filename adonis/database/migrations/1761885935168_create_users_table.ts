@@ -1,3 +1,4 @@
+import { RoleEnum } from '#enums/auth/role.enum'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
@@ -8,7 +9,7 @@ export default class extends BaseSchema {
       table.increments('id').notNullable()
       table.string('email', 254).notNullable().unique()
       table.string('password').notNullable()
-      table.enum('role', ['ADMIN', 'MANAGER', 'FINANCE', 'USER']).notNullable()
+      table.enum('role', ['ADMIN', 'MANAGER', 'FINANCE', 'USER'] as RoleEnum[]).notNullable()
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
