@@ -11,4 +11,8 @@ export class Role {
 
     return new Role(value as RoleEnum)
   }
+
+  public is(role: RoleEnum): boolean {
+    return this.value === role
+  }
 }

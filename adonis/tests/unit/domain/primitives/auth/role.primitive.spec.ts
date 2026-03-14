@@ -29,4 +29,17 @@ test.group('Role Primitive', () => {
       // then
       assert.throws(createInvalidRole, InvalidDomainException)
     })
+
+  test('can check if it has a specific role', ({ assert }) => {
+    // given
+    const role = Role.create(RoleEnum.ADMIN)
+
+    // when
+    const hasAdminRole = role.is(RoleEnum.ADMIN)
+    const hasUserRole = role.is(RoleEnum.USER)
+
+    // then
+    assert.isTrue(hasAdminRole)
+    assert.isFalse(hasUserRole)
+  })
 })
