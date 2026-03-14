@@ -1,4 +1,4 @@
-import { RoleEnum } from '#enums/auth/role.enum'
+import type { RoleEnum } from '#enums/auth/role.enum'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {

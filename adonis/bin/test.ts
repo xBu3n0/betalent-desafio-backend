@@ -11,6 +11,7 @@
 */
 
 process.env.NODE_ENV = 'test'
+process.env.DEFAULT_DB_CONNECTION = 'mysql_test'
 
 import 'reflect-metadata'
 import { Ignitor, prettyPrintError } from '@adonisjs/core'

@@ -90,6 +90,25 @@ const dbConfig = defineConfig({
     },
 
     /**
+     * Dedicated MySQL connection for automated tests.
+     */
+    mysql_test: {
+      client: 'mysql2',
+      connection: {
+        host: env.get('MYSQL_TEST_HOST', env.get('MYSQL_HOST', 'localhost')),
+        port: Number(env.get('MYSQL_TEST_PORT', env.get('MYSQL_PORT', '3306'))),
+        user: env.get('MYSQL_TEST_USER', env.get('MYSQL_USER', 'root')),
+        password: env.get('MYSQL_TEST_PASSWORD', env.get('MYSQL_PASSWORD', 'root')),
+        database: env.get('MYSQL_TEST_DATABASE', 'betalent_test'),
+      },
+      migrations: {
+        naturalSort: true,
+        paths: ['database/migrations'],
+      },
+      debug: app.inDev,
+    },
+
+    /**
      * Microsoft SQL Server connection.
      * Install package to switch: npm install tedious
      */

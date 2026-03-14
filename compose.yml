@@ -16,6 +16,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      mysql_test:
+        condition: service_healthy
     restart: unless-stopped
 
   mysql:
@@ -35,6 +37,24 @@ services:
       retries: 5
     restart: unless-stopped
 
+  mysql_test:
+    image: mysql:9.6
+    ports:
+      - 13307:3306
+    environment:
+      MYSQL_DATABASE: betalent-challenge-test
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+    volumes:
+      - mysql-integration-test-data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
   gateway-mocks:
     image: matheusprotzen/gateways-mock
     ports:
@@ -46,3 +66,4 @@ services:
 
 volumes:
   mysql-data:
+  mysql-integration-test-data:
