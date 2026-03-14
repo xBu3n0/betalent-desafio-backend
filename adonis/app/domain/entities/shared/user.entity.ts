@@ -36,8 +36,4 @@ export default class UserEntity {
   changeRole(role: Role) {
     return new UserEntity(this.id, this.email, role)
   }
-
-  requireId() {
-    return this.id
-  }
 }

@@ -17,14 +17,12 @@ test('builds a user entity from stored data', ({ assert }) => {
   const entity = UserEntity.fromRecord(record)
 
   // then
-  assert.equal(entity.requireId().value, 1)
+  assert.equal(entity.id.value, 1)
   assert.equal(entity.email.value, record.email)
   assert.equal(entity.role.value, record.role)
 })
 
-test('updates the email while keeping other data intact', ({
-  assert,
-}) => {
+test('updates the email while keeping other data intact', ({ assert }) => {
   // given
   const record = {
     id: 3,
