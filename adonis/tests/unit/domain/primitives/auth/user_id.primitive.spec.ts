@@ -3,7 +3,7 @@ import InvalidDomainException from '#domain/exceptions/shared/invalid_domain_exc
 import { UserId } from '#domain/primitives/auth/user_id.primitive'
 
 test.group('UserId Primitive', () => {
-  test('creates a new UserId instance for valid identifiers')
+  test('accepts valid user identifiers')
     .with([1, 2, 100, 12345])
     .run(({ assert }, validId) => {
       // given
@@ -16,7 +16,7 @@ test.group('UserId Primitive', () => {
       assert.equal(userId.value, input)
     })
 
-  test('throws InvalidDomainException for invalid UserId values')
+  test('rejects invalid user identifiers')
     .with([0, 1.2, -1])
     .run(({ assert }, invalidId) => {
       // given

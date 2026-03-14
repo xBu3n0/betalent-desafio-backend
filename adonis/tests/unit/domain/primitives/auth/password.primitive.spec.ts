@@ -6,7 +6,7 @@ import util from 'node:util'
 const longPassword = 'a'.repeat(33)
 
 test.group('Password Primitive', () => {
-  test('creates a password when length is within bounds')
+  test('accepts passwords within the allowed length')
     .with(['password1', 'longerPassword123', '0123456789abcdef'])
     .run(({ assert }, validPassword) => {
       // given
@@ -19,7 +19,7 @@ test.group('Password Primitive', () => {
       assert.equal(password.value, input)
     })
 
-  test('throws InvalidDomainException for invalid passwords')
+  test('rejects passwords outside the allowed length')
     .with(['', 'short', longPassword])
     .run(({ assert }, invalidPassword) => {
       // given

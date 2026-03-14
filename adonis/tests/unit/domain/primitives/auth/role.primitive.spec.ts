@@ -4,7 +4,7 @@ import { Role } from '#domain/primitives/auth/role.primitive'
 import { RoleEnum } from '#domain/enums/auth/role.enum'
 
 test.group('Role Primitive', () => {
-  test('creates RolePrimitive instances for every valid role')
+  test('recognizes every valid role')
     .with(Object.values(RoleEnum))
     .run(({ assert }, validRole) => {
       // given
@@ -17,7 +17,7 @@ test.group('Role Primitive', () => {
       assert.equal(rolePrimitive.value, input)
     })
 
-  test('throws InvalidDomainException when the role is not allowed')
+  test('rejects roles that are not allowed')
     .with([...Object.values(RoleEnum).map((s) => s.toLowerCase()), 'invalidRole', ''])
     .run(({ assert }, invalidRole) => {
       // given

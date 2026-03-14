@@ -6,7 +6,7 @@ import { MAX_EMAIL_LENGTH } from '#domain/shared/consts'
 const longEmail = `${'a'.repeat(MAX_EMAIL_LENGTH)}@example.com`
 
 test.group('Email Primitive', () => {
-  test('creates an email value for valid input')
+  test('accepts valid email addresses')
     .with(['developer@betalent.tech', 'USER+alias@Example.COM'])
     .run(({ assert }, validEmail) => {
       // given
@@ -19,7 +19,7 @@ test.group('Email Primitive', () => {
       assert.equal(email.value, input)
     })
 
-  test('throws InvalidDomainException for invalid emails')
+  test('rejects invalid email formats')
     .with(['', 'not-an-email', 'user@', '@example.com', '  user@example.com  ', longEmail])
     .run(({ assert }, invalidEmail) => {
       // given
