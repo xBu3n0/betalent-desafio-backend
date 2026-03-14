@@ -1,4 +1,7 @@
-import { GatewayStatusEnum, type GatewayStatusEnum as GatewayStatusValue } from '#domain/enums/transactions/gateway_status.enum'
+import {
+  GatewayStatusEnum,
+  type GatewayStatusEnum as GatewayStatusValue,
+} from '#domain/enums/transactions/gateway_status.enum'
 
 export class GatewayStatus {
   private constructor(public readonly value: GatewayStatusValue) {}

@@ -78,37 +78,36 @@ router
       .as('gateways')
       .use(middleware.auth())
 
-      router
-        .group(() => {
-          router
-            .get('/', [controllers.http.Products, 'index'])
-            .use(middleware.product({ abilities: ['readAll'] }))
-  
-          router
-            .post('/', [controllers.http.Products, 'store'])
-            .use(middleware.product({ abilities: ['create'] }))
-  
-          router
-            .get('/:id', [controllers.http.Products, 'show'])
-            .use(middleware.product({ abilities: ['read'] }))
-  
-          router
-            .patch('/:id', [controllers.http.Products, 'update'])
-            .use(middleware.product({ abilities: ['update'] }))
-  
-          router
-            .delete('/:id', [controllers.http.Products, 'destroy'])
-            .use(middleware.product({ abilities: ['delete'] }))
-        })
-        .prefix('products')
-        .as('products')
-        .use(middleware.auth())
-    
+    router
+      .group(() => {
+        router
+          .get('/', [controllers.http.Products, 'index'])
+          .use(middleware.product({ abilities: ['readAll'] }))
+
+        router
+          .post('/', [controllers.http.Products, 'store'])
+          .use(middleware.product({ abilities: ['create'] }))
+
+        router
+          .get('/:id', [controllers.http.Products, 'show'])
+          .use(middleware.product({ abilities: ['read'] }))
+
+        router
+          .patch('/:id', [controllers.http.Products, 'update'])
+          .use(middleware.product({ abilities: ['update'] }))
+
+        router
+          .delete('/:id', [controllers.http.Products, 'destroy'])
+          .use(middleware.product({ abilities: ['delete'] }))
+      })
+      .prefix('products')
+      .as('products')
+      .use(middleware.auth())
+
     router
       .post('purchases', [controllers.http.Purchases, 'store'])
       .as('purchases.store')
       .use(middleware.auth())
-
 
     router
       .group(() => {

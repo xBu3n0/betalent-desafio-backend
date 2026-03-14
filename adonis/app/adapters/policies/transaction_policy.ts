@@ -1,4 +1,4 @@
-import TransactionEntity from '#domain/entities/shared/transaction.entity'
+import type TransactionEntity from '#domain/entities/shared/transaction.entity'
 import { RoleEnum } from '#enums/auth/role.enum'
 import type User from '#models/auth/user'
 import { BasePolicy } from '@adonisjs/bouncer'

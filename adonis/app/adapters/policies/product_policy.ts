@@ -1,4 +1,4 @@
-import ProductEntity from '#domain/entities/shared/product.entity'
+import type ProductEntity from '#domain/entities/shared/product.entity'
 import { RoleEnum } from '#enums/auth/role.enum'
 import type User from '#models/auth/user'
 import { BasePolicy } from '@adonisjs/bouncer'

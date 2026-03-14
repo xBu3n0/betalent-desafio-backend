@@ -23,7 +23,7 @@ export default class AppProvider {
 
       return new LucidGatewayRepository()
     })
-    
+
     this.app.container.singleton(ProductRepositoryInterface, async () => {
       const { default: LucidProductRepository } =
         await import('#infrastructure/repositories/transactions/product.repository')

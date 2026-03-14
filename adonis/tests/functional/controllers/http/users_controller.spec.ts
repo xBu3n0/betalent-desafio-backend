@@ -358,7 +358,9 @@ test.group('UsersController | functional', (group) => {
     const targetManager = await UserFactory.merge({ role: RoleEnum.MANAGER }).create()
 
     // when
-    const response = await client.delete(`${USERS_BASE_URL}/${targetManager.id}`).loginAs(actingManager)
+    const response = await client
+      .delete(`${USERS_BASE_URL}/${targetManager.id}`)
+      .loginAs(actingManager)
 
     // then
     response.assertStatus(403)
