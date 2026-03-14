@@ -1,0 +1,6 @@
+export type { RegisterUserInput } from './register-user/input.ts'
+export type { RegisterUserOutput } from './register-user/output.ts'
+export type { AuthenticationInput } from './authentication/input.ts'
+export type { AuthenticationOutput } from './authentication/output.ts'
+export type { UpdateUserInput } from './update-user/input.ts'
+export type { UpdateUserOutput } from './update-user/output.ts'
