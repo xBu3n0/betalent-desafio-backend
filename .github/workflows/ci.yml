@@ -25,12 +25,12 @@ jobs:
       SESSION_DRIVER: cookie
 
       # MySQL
-      MYSQL_DATABASE: betalent-challenge
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: user
-      MYSQL_PASSWORD: user_password
-      MYSQL_HOST: 127.0.0.1
-      MYSQL_PORT: 13306
+      MYSQL_TEST_DATABASE: betalent-challenge-test
+      MYSQL_TEST_ROOT_PASSWORD: root
+      MYSQL_TEST_USER: user
+      MYSQL_TEST_PASSWORD: user_password
+      MYSQL_TEST_HOST: 127.0.0.1
+      MYSQL_TEST_PORT: 13307
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v5
@@ -55,19 +55,19 @@ jobs:
           docker pull mysql:9.6
           docker save --output /tmp/docker-image-cache/mysql-9.6.tar mysql:9.6
       - name: Start fake database
-        run: docker compose -f compose.yml up -d mysql
+        run: docker compose -f compose.yml up -d
         working-directory: adonis
       - name: Wait for MySQL
         run: |
           for i in $(seq 1 30); do
-            if docker compose -f compose.yml exec mysql mysqladmin ping -h localhost -uroot -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
+            if docker compose -f compose.yml exec mysql_test mysqladmin ping -h localhost -uroot -p"$MYSQL_ROOT_PASSWORD" >/dev/null 2>&1; then
               echo "MySQL is ready"
               exit 0
             fi
             echo "Waiting for MySQL ($i/30)"
             sleep 2
           done
-          docker compose -f compose.yml logs mysql
+          docker compose -f compose.yml logs mysql_test
           exit 1
         working-directory: adonis
       - name: Check formatting

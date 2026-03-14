@@ -1,15 +1,15 @@
 services:
-  mysql:
+  mysql_test:
     image: mysql:9.6
     ports:
-      - 13306:3306
+      - 13307:3306
     environment:
-      MYSQL_DATABASE: betalent-challenge
+      MYSQL_DATABASE: betalent-challenge-test
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: user
       MYSQL_PASSWORD: user_password
     volumes:
-      - mysql-test-data:/var/lib/mysql
+      - mysql-integration-test-data:/var/lib/mysql
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       interval: 10s
@@ -18,4 +18,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  mysql-test-data:
+  mysql-integration-test-data:
