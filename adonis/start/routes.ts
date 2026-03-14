@@ -33,5 +33,31 @@ router
       .prefix('account')
       .as('profile')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router
+          .get('/', [controllers.http.Users, 'index'])
+          .use(middleware.user({ abilities: ['readAll'] }))
+
+        router
+          .post('/', [controllers.http.Users, 'store'])
+          .use(middleware.user({ abilities: ['create'] }))
+
+        router
+          .get('/:id', [controllers.http.Users, 'show'])
+          .use(middleware.user({ abilities: ['read'] }))
+
+        router
+          .patch('/:id', [controllers.http.Users, 'update'])
+          .use(middleware.user({ abilities: ['update'] }))
+
+        router
+          .delete('/:id', [controllers.http.Users, 'destroy'])
+          .use(middleware.user({ abilities: ['delete'] }))
+      })
+      .prefix('users')
+      .as('users')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

@@ -8,5 +8,6 @@ export const controllers = {
     AccessToken: () => import('#controllers/http/access_token_controller'),
     NewAccount: () => import('#controllers/http/new_account_controller'),
     Profile: () => import('#controllers/http/profile_controller'),
+    Users: () => import('#controllers/http/users_controller'),
   },
 }

@@ -1,18 +1,20 @@
 import User from '#models/auth/user'
-import { loginValidator } from '../../validators/user.ts'
+import { loginValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
-import UserTransformer from '../../transformers/user_transformer.ts'
+import UserTransformer from '#transformers/user_transformer'
+import type UserService from '#services/auth/user.service'
 
 export default class AccessTokenController {
+  constructor(private readonly userService: UserService) {}
+
   async store({ request, serialize }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
 
-    const user = await User.verifyCredentials(email, password)
-    const token = await User.accessTokens.create(user)
+    const { user, token } = await this.userService.login({ email, password })
 
     return serialize({
       user: UserTransformer.transform(user),
-      token: token.value!.release(),
+      token,
     })
   }
 

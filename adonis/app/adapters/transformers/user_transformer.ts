@@ -1,8 +1,14 @@
-import type User from '../../infrastructure/models/auth/user.ts'
+import type UserEntity from '#domain/entities/shared/user.entity'
 import { BaseTransformer } from '@adonisjs/core/transformers'
 
-export default class UserTransformer extends BaseTransformer<User> {
+export default class UserTransformer extends BaseTransformer<UserEntity> {
   toObject() {
-    return this.pick(this.resource, ['id', 'email', 'createdAt', 'updatedAt'])
+    const { id, email, role } = this.resource
+
+    return {
+      id: id.value,
+      email: email.value,
+      role: role.value,
+    }
   }
 }

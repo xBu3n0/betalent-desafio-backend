@@ -1,30 +1,15 @@
 import type { ApplicationService } from '@adonisjs/core/types'
+import UserRepositoryInterface from '#repositories/auth/user.repository'
 
 export default class AppProvider {
   constructor(protected app: ApplicationService) {}
 
-  /**
-   * Register bindings to the container
-   */
-  register() {}
+  async register() {
+    this.app.container.singleton(UserRepositoryInterface, async () => {
+      const { default: LucidUserRepository } =
+        await import('#infrastructure/repositories/auth/user.repository')
 
-  /**
-   * The container bindings have booted
-   */
-  async boot() {}
-
-  /**
-   * The application has been booted
-   */
-  async start() {}
-
-  /**
-   * The process has been started
-   */
-  async ready() {}
-
-  /**
-   * Preparing to shutdown the app
-   */
-  async shutdown() {}
+      return new LucidUserRepository()
+    })
+  }
 }

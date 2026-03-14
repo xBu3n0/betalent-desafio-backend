@@ -42,17 +42,9 @@ async function runAceCommand(commandName: string, args: string[]) {
 
 test.group('UserService integration (real database)', (group) => {
   group.setup(async () => {
-    await runAceCommand('migration:run', [
-      '--compact-output',
-      '--no-schema-generate',
-    ])
+    await runAceCommand('migration:run', ['--compact-output', '--no-schema-generate'])
 
-
-    return () => 
-      runAceCommand('migration:reset', [
-        '--compact-output',
-        '--no-schema-generate',
-      ])
+    return () => runAceCommand('migration:reset', ['--compact-output', '--no-schema-generate'])
   })
 
   group.each.setup(() => {

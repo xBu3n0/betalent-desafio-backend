@@ -1,18 +1,21 @@
-import User from '#models/auth/user'
-import { signupValidator } from '#validators/user'
+import { createUserValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
+import UserService from '#services/auth/user.service'
+import { inject } from '@adonisjs/core'
 
+@inject()
 export default class NewAccountController {
-  async store({ request, serialize }: HttpContext) {
-    const { email, password, role } = await request.validateUsing(signupValidator)
+  constructor(private readonly userService: UserService) {}
 
-    const user = await User.create({ email, password, role })
-    const token = await User.accessTokens.create(user)
+  async store({ request, serialize }: HttpContext) {
+    const { email, password, role } = await request.validateUsing(createUserValidator)
+
+    const { user, token } = await this.userService.create({ email, password, role })
 
     return serialize({
       user: UserTransformer.transform(user),
-      token: token.value!.release(),
+      token,
     })
   }
 }
