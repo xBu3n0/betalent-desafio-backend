@@ -39,6 +39,21 @@ jobs:
           cache: npm
           cache-dependency-path: adonis/package-lock.json
       - run: npm ci
+      - name: Restore MySQL image cache
+        id: mysql-image-cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-image-cache/mysql-9.6.tar
+          key: ${{ runner.os }}-docker-mysql-9.6
+      - name: Load cached MySQL image
+        if: steps.mysql-image-cache.outputs.cache-hit == 'true'
+        run: docker load --input /tmp/docker-image-cache/mysql-9.6.tar
+      - name: Pull and cache MySQL image
+        if: steps.mysql-image-cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p /tmp/docker-image-cache
+          docker pull mysql:9.6
+          docker save --output /tmp/docker-image-cache/mysql-9.6.tar mysql:9.6
       - name: Start fake database
         run: docker compose -f compose.yml up -d mysql
         working-directory: adonis
