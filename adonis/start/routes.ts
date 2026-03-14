@@ -59,5 +59,23 @@ router
       .prefix('users')
       .as('users')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router
+          .get('/', [controllers.http.Gateways, 'index'])
+          .use(middleware.gateway({ abilities: ['readAll'] }))
+
+        router
+          .patch('/:id/status', [controllers.http.Gateways, 'updateStatus'])
+          .use(middleware.gateway({ abilities: ['update'] }))
+
+        router
+          .patch('/:id/priority', [controllers.http.Gateways, 'updatePriority'])
+          .use(middleware.gateway({ abilities: ['update'] }))
+      })
+      .prefix('gateways')
+      .as('gateways')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')
