@@ -63,9 +63,9 @@ export default class TransactionService {
     const cardNumber = CardNumber.create(input.cardNumber)
     const cvv = Cvv.create(input.cvv)
     const items = this.normalizeItems(input.items)
-    
+
     const products = await this.fetchProducts(items.map((item) => item.productId))
-    
+
     const totalAmount = ProductAmount.create(
       items.reduce((total, item) => {
         const product = products.find((candidate) => candidate.id.value === item.productId.value)!
