@@ -24,7 +24,7 @@ export default class GatewayEntity {
     return new GatewayEntity(
       GatewayId.create(record.id),
       GatewayName.create(record.name),
-      GatewayStatus.create(record.isActive),
+      record.isActive ? GatewayStatus.active() : GatewayStatus.inactive(),
       GatewayPriority.create(record.priority)
     )
   }

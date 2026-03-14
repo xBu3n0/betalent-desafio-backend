@@ -1,5 +1,6 @@
 import { test } from '@japa/runner'
 import GatewayEntity from '#domain/entities/shared/gateway.entity'
+import { GatewayStatusEnum } from '#domain/enums/transactions/gateway_status.enum'
 
 test('builds a gateway entity from stored data', ({ assert }) => {
   // given
@@ -38,9 +39,9 @@ test('deactivates a gateway immutably', ({ assert }) => {
 
   // then
   assert.isTrue(entity.status.isActive())
-  assert.isTrue(entity.status.value)
+  assert.equal(entity.status.value, GatewayStatusEnum.ACTIVE)
   assert.isTrue(disabled.status.isInactive())
-  assert.isFalse(disabled.status.value)
+  assert.equal(disabled.status.value, GatewayStatusEnum.INACTIVE)
   assert.notStrictEqual(entity, disabled)
 })
 
@@ -60,9 +61,9 @@ test('activates a gateway immutably', ({ assert }) => {
 
   // then
   assert.isTrue(entity.status.isInactive())
-  assert.isFalse(entity.status.value)
+  assert.equal(entity.status.value, GatewayStatusEnum.INACTIVE)
   assert.isTrue(enabled.status.isActive())
-  assert.isTrue(enabled.status.value)
+  assert.equal(enabled.status.value, GatewayStatusEnum.ACTIVE)
   assert.notStrictEqual(entity, enabled)
 })
 
