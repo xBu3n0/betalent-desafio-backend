@@ -1,33 +1,19 @@
 import { test } from '@japa/runner'
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
 import { ProductQuantity } from '#domain/primitives/transactions/product_quantity.primitive'
+import { runPrimitiveTests } from '#tests/unit/domain/primitives/shared/primitive.spec_helper'
 
 test.group('ProductQuantity Primitive', () => {
-  test('accepts valid product quantities')
-    .with([1, 2, 10, 999])
-    .run(({ assert }, validQuantity) => {
-      // given
-      const input = validQuantity
-
-      // when
-      const productQuantity = ProductQuantity.create(input)
-
-      // then
-      assert.equal(productQuantity.value, input)
-    })
-
-  test('rejects invalid product quantities')
-    .with([0, -1, 1.5])
-    .run(({ assert }, invalidQuantity) => {
-      // given
-      const input = invalidQuantity
-
-      // when
-      const createInvalidProductQuantity = () => ProductQuantity.create(input)
-
-      // then
-      assert.throws(createInvalidProductQuantity, InvalidDomainException)
-    })
+  runPrimitiveTests({
+    primitive: ProductQuantity,
+    accepts: {
+      title: 'accepts valid product quantities',
+      values: [1, 2, 10, 999],
+    },
+    rejects: {
+      title: 'rejects invalid product quantities',
+      values: [0, -1, 1.5],
+    },
+  })
 
   test('multiplies the quantity by the product amount')
     .with([

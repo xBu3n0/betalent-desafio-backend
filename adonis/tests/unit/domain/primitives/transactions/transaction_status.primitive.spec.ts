@@ -1,34 +1,20 @@
 import { test } from '@japa/runner'
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
 import { TransactionStatusEnum } from '#domain/enums/transactions/transaction_status.enum'
 import { TransactionStatus } from '#domain/primitives/transactions/transaction_status.primitive'
+import { runPrimitiveTests } from '#tests/unit/domain/primitives/shared/primitive.spec_helper'
 
 test.group('TransactionStatus Primitive', () => {
-  test('accepts valid transaction statuses')
-    .with(Object.values(TransactionStatusEnum))
-    .run(({ assert }, validStatus) => {
-      // given
-      const input = validStatus
-
-      // when
-      const transactionStatus = TransactionStatus.create(input)
-
-      // then
-      assert.equal(transactionStatus.value, input)
-    })
-
-  test('rejects invalid transaction statuses')
-    .with(['processing', 'completed', ''])
-    .run(({ assert }, invalidStatus) => {
-      // given
-      const input = invalidStatus
-
-      // when
-      const createInvalidTransactionStatus = () => TransactionStatus.create(input)
-
-      // then
-      assert.throws(createInvalidTransactionStatus, InvalidDomainException)
-    })
+  runPrimitiveTests({
+    primitive: TransactionStatus,
+    accepts: {
+      title: 'accepts valid transaction statuses',
+      values: Object.values(TransactionStatusEnum),
+    },
+    rejects: {
+      title: 'rejects invalid transaction statuses',
+      values: ['processing', 'completed', ''],
+    },
+  })
 
   test('creates the pending status', ({ assert }) => {
     // given

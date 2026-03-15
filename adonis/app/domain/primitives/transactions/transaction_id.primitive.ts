@@ -1,13 +1,11 @@
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
+import IdPrimitive from '#domain/primitives/shared/id.primitive'
 
-export class TransactionId {
-  private constructor(public readonly value: number) {}
+export class TransactionId extends IdPrimitive {
+  private constructor(value: number) {
+    super(value)
+  }
 
   public static create(value: number): TransactionId {
-    if (!Number.isInteger(value) || value <= 0) {
-      throw new InvalidDomainException(`${value} is not a valid TransactionId`)
-    }
-
-    return new TransactionId(value)
+    return this.createId(value, this.name, (domainValidatedValue) => new TransactionId(domainValidatedValue))
   }
 }

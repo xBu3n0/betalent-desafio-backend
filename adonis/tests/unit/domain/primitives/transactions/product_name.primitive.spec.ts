@@ -1,33 +1,19 @@
 import { test } from '@japa/runner'
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
 import { ProductName } from '#domain/primitives/transactions/product_name.primitive'
+import { runPrimitiveTests } from '#tests/unit/domain/primitives/shared/primitive.spec_helper'
 
 const longProductName = 'a'.repeat(256)
 
 test.group('ProductName Primitive', () => {
-  test('accepts valid product names')
-    .with(['Course', 'Notebook', 'Premium Subscription'])
-    .run(({ assert }, validName) => {
-      // given
-      const input = validName
-
-      // when
-      const productName = ProductName.create(input)
-
-      // then
-      assert.equal(productName.value, input)
-    })
-
-  test('rejects invalid product names')
-    .with(['', '   ', longProductName])
-    .run(({ assert }, invalidName) => {
-      // given
-      const input = invalidName
-
-      // when
-      const createInvalidProductName = () => ProductName.create(input)
-
-      // then
-      assert.throws(createInvalidProductName, InvalidDomainException)
-    })
+  runPrimitiveTests({
+    primitive: ProductName,
+    accepts: {
+      title: 'accepts valid product names',
+      values: ['Course', 'Notebook', 'Premium Subscription'],
+    },
+    rejects: {
+      title: 'rejects invalid product names',
+      values: ['', '   ', longProductName],
+    },
+  })
 })

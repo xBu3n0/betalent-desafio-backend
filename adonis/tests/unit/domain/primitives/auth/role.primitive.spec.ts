@@ -1,34 +1,20 @@
 import { test } from '@japa/runner'
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
 import { Role } from '#domain/primitives/auth/role.primitive'
 import { RoleEnum } from '#domain/enums/auth/role.enum'
+import { runPrimitiveTests } from '#tests/unit/domain/primitives/shared/primitive.spec_helper'
 
 test.group('Role Primitive', () => {
-  test('recognizes every valid role')
-    .with(Object.values(RoleEnum))
-    .run(({ assert }, validRole) => {
-      // given
-      const input = validRole
-
-      // when
-      const rolePrimitive = Role.create(input)
-
-      // then
-      assert.equal(rolePrimitive.value, input)
-    })
-
-  test('rejects roles that are not allowed')
-    .with([...Object.values(RoleEnum).map((s) => s.toLowerCase()), 'invalidRole', ''])
-    .run(({ assert }, invalidRole) => {
-      // given
-      const input = invalidRole
-
-      // when
-      const createInvalidRole = () => Role.create(input)
-
-      // then
-      assert.throws(createInvalidRole, InvalidDomainException)
-    })
+  runPrimitiveTests({
+    primitive: Role,
+    accepts: {
+      title: 'recognizes every valid role',
+      values: Object.values(RoleEnum),
+    },
+    rejects: {
+      title: 'rejects roles that are not allowed',
+      values: [...Object.values(RoleEnum).map((role) => role.toLowerCase()), 'invalidRole', ''],
+    },
+  })
 
   test('can check if it has the requested role', ({ assert }) => {
     // given

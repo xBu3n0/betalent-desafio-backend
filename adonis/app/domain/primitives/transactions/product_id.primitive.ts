@@ -1,13 +1,11 @@
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
+import IdPrimitive from '#domain/primitives/shared/id.primitive'
 
-export class ProductId {
-  private constructor(public readonly value: number) {}
+export class ProductId extends IdPrimitive {
+  private constructor(value: number) {
+    super(value)
+  }
 
   public static create(value: number): ProductId {
-    if (!Number.isInteger(value) || value <= 0) {
-      throw new InvalidDomainException(`${value} is not a valid ProductId`)
-    }
-
-    return new ProductId(value)
+    return this.createId(value, this.name, (domainValidatedValue) => new ProductId(domainValidatedValue))
   }
 }

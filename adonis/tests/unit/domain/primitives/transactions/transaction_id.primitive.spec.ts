@@ -1,31 +1,17 @@
 import { test } from '@japa/runner'
-import InvalidDomainException from '#domain/exceptions/shared/invalid_domain.exception'
 import { TransactionId } from '#domain/primitives/transactions/transaction_id.primitive'
+import { runIdPrimitiveTests } from '#tests/unit/domain/primitives/shared/id_primitive.spec_helper'
 
 test.group('TransactionId Primitive', () => {
-  test('accepts valid transaction identifiers')
-    .with([1, 2, 100, 12345])
-    .run(({ assert }, validId) => {
-      // given
-      const input = validId
-
-      // when
-      const transactionId = TransactionId.create(input)
-
-      // then
-      assert.equal(transactionId.value, input)
-    })
-
-  test('rejects invalid transaction identifiers')
-    .with([0, -1, 1.2])
-    .run(({ assert }, invalidId) => {
-      // given
-      const input = invalidId
-
-      // when
-      const createInvalidTransactionId = () => TransactionId.create(input)
-
-      // then
-      assert.throws(createInvalidTransactionId, InvalidDomainException)
-    })
+  runIdPrimitiveTests({
+    primitive: TransactionId,
+    accepts: {
+      title: 'accepts valid transaction identifiers',
+      values: [1, 2, 100, 12345],
+    },
+    rejects: {
+      title: 'rejects invalid transaction identifiers',
+      values: [0, -1, 1.2],
+    },
+  })
 })
