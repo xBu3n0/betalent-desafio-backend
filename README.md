@@ -429,3 +429,20 @@ cd adonis
 npm install
 npm test
 ```
+
+### Workflow no GitHub
+
+O repositório inclui o workflow `CI`, definido em `.github/workflows/ci.yml`, com lint, execução da suíte e coverage.
+
+Por ele, é possível visualizar no próprio GitHub:
+
+- o resultado dos testes
+- o log completo da suíte
+- a saída de coverage
+
+Para visualizar essas informações:
+
+1. Acesse a aba `Actions` do repositório.
+2. Abra uma execução do workflow `CI`.
+3. Entre no job `ci`.
+4. Veja os steps de validação, em especial `Run tests with coverage`.
