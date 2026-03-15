@@ -15,7 +15,7 @@ import { TransactionFactory } from '#database/factories/transaction_factory'
 import { TransactionProductFactory } from '#database/factories/transaction_product_factory'
 import GatewayProcessorRegistry from '#services/transactions/gateway_processor_registry'
 import Transaction from '#models/transactions/transaction'
-import TransactionDetailsTransformer from '#transformers/transaction_details_transformer'
+import type TransactionDetailsTransformer from '#transformers/transaction_details_transformer'
 
 const TRANSACTIONS_BASE_URL = '/api/v1/transactions'
 

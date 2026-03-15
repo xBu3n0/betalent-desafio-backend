@@ -5,6 +5,7 @@ import { Password } from '#domain/primitives/auth/password.primitive'
 import UserNotFoundException from '#domain/exceptions/auth/user_not_found.exception'
 import UserEntity from '#domain/entities/shared/user.entity'
 import UserRepositoryInterface from '#repositories/auth/user.repository'
+import ClientService from '#services/transactions/client.service'
 import type {
   AuthenticationInput,
   AuthenticationOutput,
@@ -19,7 +20,10 @@ import AuthUserEntity from '#domain/entities/auth/new_user.entity'
 
 @inject()
 export default class UserService {
-  constructor(private readonly userRepository: UserRepositoryInterface) {}
+  constructor(
+    private readonly userRepository: UserRepositoryInterface,
+    private readonly clientService: ClientService
+  ) {}
 
   async create(input: RegisterUserInput): Promise<RegisterUserOutput> {
     const email = Email.create(input.email)
@@ -31,6 +35,7 @@ export default class UserService {
     const user = await this.userRepository.create(authUser, {
       password,
     })
+    await this.clientService.ensureForUser(user)
 
     const token = await this.issueToken(user)
     return { user, token }
@@ -75,7 +80,10 @@ export default class UserService {
       user = user.changeRole(Role.create(input.role))
     }
 
-    return this.userRepository.update(user)
+    const updatedUser = await this.userRepository.update(user)
+    await this.clientService.syncForUser(updatedUser)
+
+    return updatedUser
   }
 
   async getById(id: number) {
@@ -97,6 +105,7 @@ export default class UserService {
   async delete(id: number) {
     const userId = UserId.create(id)
 
+    await this.clientService.deleteByUserId(userId)
     await this.userRepository.delete(userId)
   }
 

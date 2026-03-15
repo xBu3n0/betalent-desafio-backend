@@ -1,19 +1,30 @@
 import { test } from '@japa/runner'
 import Client from '#models/transactions/client'
 import Transaction from '#models/transactions/transaction'
+import type User from '#models/auth/user'
 import ClientNotFoundException from '#domain/exceptions/transactions/client_not_found.exception'
 import ProductNotFoundException from '#domain/exceptions/transactions/product_not_found.exception'
 import TransactionPaymentFailedException from '#domain/exceptions/transactions/transaction_payment_failed.exception'
 import TransactionNotFoundException from '#domain/exceptions/transactions/transaction_not_found.exception'
+import UserEntity from '#domain/entities/shared/user.entity'
 import { GatewayFactory } from '#database/factories/gateway_factory'
 import { ProductFactory } from '#database/factories/product_factory'
 import { UserFactory } from '#database/factories/user_factory'
+import app from '@adonisjs/core/services/app'
+import ClientService from '#services/transactions/client.service'
 import {
   cleanupTransactionsDatabase,
   FakeGatewayProcessor,
   makeTransactionService,
   runAceCommand,
 } from './test_utils.js'
+
+async function syncClientForUser(user: User) {
+  const clientService = await app.container.make(ClientService)
+  await clientService.ensureForUser(UserEntity.fromRecord(user.toRecord()))
+
+  return user
+}
 
 test.group('TransactionService integration (real database)', (group) => {
   group.setup(async () => {
@@ -30,7 +41,7 @@ test.group('TransactionService integration (real database)', (group) => {
 
   test('authorizes a purchase on the first successful gateway', async ({ assert }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const firstProduct = await ProductFactory.merge({ quantity: 10 }).create()
     const secondProduct = await ProductFactory.merge({ quantity: 5 }).create()
     const gateway = await GatewayFactory.merge({
@@ -72,7 +83,7 @@ test.group('TransactionService integration (real database)', (group) => {
     assert,
   }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const product = await ProductFactory.merge({ quantity: 10 }).create()
     await GatewayFactory.merge({
       name: 'Gateway 1',
@@ -107,7 +118,7 @@ test.group('TransactionService integration (real database)', (group) => {
 
   test('falls back to the next active gateway when a gateway charge fails', async ({ assert }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const product = await ProductFactory.merge({ quantity: 10 }).create()
     await GatewayFactory.merge({ name: 'Gateway 1', priority: 1, isActive: true }).create()
     const secondGateway = await GatewayFactory.merge({
@@ -140,7 +151,7 @@ test.group('TransactionService integration (real database)', (group) => {
     assert,
   }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const gateway = await GatewayFactory.merge({
       name: 'Gateway 1',
       priority: 1,
@@ -174,7 +185,7 @@ test.group('TransactionService integration (real database)', (group) => {
 
   test('refunds an authorized transaction using the stored gateway', async ({ assert }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const product = await ProductFactory.merge({ quantity: 10 }).create()
     await GatewayFactory.merge({ name: 'Gateway 1', priority: 1, isActive: true }).create()
     await GatewayFactory.merge({ name: 'Gateway 2', priority: 2, isActive: true }).create()
@@ -204,7 +215,7 @@ test.group('TransactionService integration (real database)', (group) => {
     assert,
   }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const product = await ProductFactory.merge({ quantity: 10 }).create()
     await GatewayFactory.merge({ name: 'Gateway 1', priority: 1, isActive: true }).create()
     await GatewayFactory.merge({ name: 'Gateway 2', priority: 2, isActive: true }).create()
@@ -239,7 +250,7 @@ test.group('TransactionService integration (real database)', (group) => {
     assert,
   }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const product = await ProductFactory.merge({ quantity: 10 }).create()
     await GatewayFactory.merge({
       name: 'Gateway 1',

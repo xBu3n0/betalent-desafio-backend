@@ -5,14 +5,17 @@ import type { InferData } from '@adonisjs/http-transformers/types'
 import type { ChargeGatewayInput, GatewayChargeResult } from '#application/gateways/payment_gateway'
 import type PaymentGateway from '#application/gateways/payment_gateway'
 import type GatewayEntity from '#domain/entities/shared/gateway.entity'
+import UserEntity from '#domain/entities/shared/user.entity'
 import { TransactionStatusEnum } from '#domain/enums/transactions/transaction_status.enum'
 import { UserFactory } from '#database/factories/user_factory'
 import { GatewayFactory } from '#database/factories/gateway_factory'
 import { ProductFactory } from '#database/factories/product_factory'
 import GatewayProcessorRegistry from '#services/transactions/gateway_processor_registry'
+import ClientService from '#services/transactions/client.service'
 import type TransactionDetailsTransformer from '#transformers/transaction_details_transformer'
 import Client from '#models/transactions/client'
 import Transaction from '#models/transactions/transaction'
+import type User from '#models/auth/user'
 
 const PURCHASES_BASE_URL = '/api/v1/purchases'
 
@@ -77,6 +80,13 @@ async function cleanupTransactions() {
   await db.from('users').delete()
 }
 
+async function syncClientForUser(user: User) {
+  const clientService = await app.container.make(ClientService)
+  await clientService.ensureForUser(UserEntity.fromRecord(user.toRecord()))
+
+  return user
+}
+
 test.group('PurchasesController | functional', (group) => {
   let gatewayOneProcessor: SpyGatewayProcessor
   let gatewayTwoProcessor: SpyGatewayProcessor
@@ -107,7 +117,7 @@ test.group('PurchasesController | functional', (group) => {
     assert,
   }) => {
     // given
-    const user = await UserFactory.create()
+    const user = await syncClientForUser(await UserFactory.create())
     const gateway = await GatewayFactory.merge({
       name: 'Gateway 1',
       isActive: true,

@@ -1,10 +1,12 @@
 import { test } from '@japa/runner'
 import app from '@adonisjs/core/services/app'
 import UserService from '#services/auth/user.service'
+import ClientService from '#services/transactions/client.service'
 import { RoleEnum } from '#enums/auth/role.enum'
 import UserNotFoundException from '#domain/exceptions/auth/user_not_found.exception'
 import User from '#models/auth/user'
 import Client from '#models/transactions/client'
+import UserEntity from '#domain/entities/shared/user.entity'
 import { UserFactory } from '#database/factories/user_factory'
 import InvalidCredentialsException from '#domain/exceptions/auth/invalid_credentials.exception'
 import hash from '@adonisjs/core/services/hash'
@@ -13,6 +15,13 @@ const MISSING_USER_ID = 999999
 
 async function makeService() {
   return app.container.make(UserService)
+}
+
+async function syncClientForUser(user: User) {
+  const clientService = await app.container.make(ClientService)
+  await clientService.ensureForUser(UserEntity.fromRecord(user.toRecord()))
+
+  return user
 }
 
 async function makeUserInput(role?: RoleEnum) {
@@ -124,9 +133,11 @@ test.group('UserService integration (real database)', (group) => {
   }) => {
     // given
     const service = await makeService()
-    const created = await UserFactory.merge({
-      role: RoleEnum.USER,
-    }).create()
+    const created = await syncClientForUser(
+      await UserFactory.merge({
+        role: RoleEnum.USER,
+      }).create()
+    )
     const originalClient = await Client.findByOrFail('userId', created.id)
 
     const newUser = await makeUserInput()

@@ -1,6 +1,8 @@
 import type { Email } from '#domain/primitives/shared/email.primitive'
 import type { UserId } from '#domain/primitives/auth/user_id.primitive'
 import type { ClientId } from '#domain/primitives/transactions/client_id.primitive'
+import type { ClientName } from '#domain/primitives/transactions/client_name.primitive'
+import type NewClientEntity from '#domain/entities/transactions/new_client.entity'
 import ClientEntity from '#domain/entities/shared/client.entity'
 import type ClientRepositoryInterface from '#repositories/transactions/client.repository'
 import Client from '#models/transactions/client'
@@ -58,5 +60,43 @@ export default class LucidClientRepository implements ClientRepositoryInterface 
       name: client.name,
       email: client.email,
     })
+  }
+
+  async create(newClient: NewClientEntity) {
+    const client = await Client.create({
+      userId: newClient.userId.value,
+      name: newClient.name.value,
+      email: newClient.email.value,
+    })
+
+    return ClientEntity.fromRecord({
+      id: client.id,
+      userId: client.userId,
+      name: client.name,
+      email: client.email,
+    })
+  }
+
+  async updateByUserId(userId: UserId, data: { name: ClientName; email: Email }) {
+    const client = await Client.findBy('userId', userId.value)
+    if (!client) {
+      return null
+    }
+
+    client.name = data.name.value
+    client.email = data.email.value
+
+    await client.save()
+
+    return ClientEntity.fromRecord({
+      id: client.id,
+      userId: client.userId,
+      name: client.name,
+      email: client.email,
+    })
+  }
+
+  async deleteByUserId(userId: UserId) {
+    await Client.query().where('user_id', userId.value).delete()
   }
 }

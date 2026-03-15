@@ -3,6 +3,8 @@ import app from '@adonisjs/core/services/app'
 import db from '@adonisjs/lucid/services/db'
 import User from '#models/auth/user'
 import Client from '#models/transactions/client'
+import ClientService from '#services/transactions/client.service'
+import UserEntity from '#domain/entities/shared/user.entity'
 import { UserFactory } from '#database/factories/user_factory'
 import { RoleEnum } from '#enums/auth/role.enum'
 
@@ -40,6 +42,13 @@ async function cleanupUsers() {
   await db.from('auth_access_tokens').delete()
   await db.from('clients').delete()
   await db.from('users').delete()
+}
+
+async function syncClientForUser(user: User) {
+  const clientService = await app.container.make(ClientService)
+  await clientService.ensureForUser(UserEntity.fromRecord(user.toRecord()))
+
+  return user
 }
 
 test.group('UsersController | functional', (group) => {
@@ -237,7 +246,7 @@ test.group('UsersController | functional', (group) => {
   test('updates a user for admins', async ({ client, assert }) => {
     // given
     const admin = await UserFactory.merge({ role: RoleEnum.ADMIN }).create()
-    const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
+    const user = await syncClientForUser(await UserFactory.merge({ role: RoleEnum.USER }).create())
 
     // when
     const response = await client.patch(`${USERS_BASE_URL}/${user.id}`).loginAs(admin).json({
@@ -266,7 +275,7 @@ test.group('UsersController | functional', (group) => {
   test('updates a non-admin user for managers', async ({ client, assert }) => {
     // given
     const manager = await UserFactory.merge({ role: RoleEnum.MANAGER }).create()
-    const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
+    const user = await syncClientForUser(await UserFactory.merge({ role: RoleEnum.USER }).create())
 
     // when
     const response = await client.patch(`${USERS_BASE_URL}/${user.id}`).loginAs(manager).json({
