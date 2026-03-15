@@ -33,6 +33,7 @@ if [[ -n "$FORCE" && "$FORCE" != "--force" ]]; then
 fi
 
 copy_env "$ROOT_DIR/.env.example" "$ROOT_DIR/.env"
-copy_env "$ROOT_DIR/adonis/.env.example" "$ROOT_DIR/adonis/.env"
+copy_env "$ROOT_DIR/adonis/.env.docker.example" "$ROOT_DIR/adonis/.env.docker"
+copy_env "$ROOT_DIR/adonis/.env.local.example" "$ROOT_DIR/adonis/.env"
 
 echo "Arquivos .env prontos. Inicie a stack com: docker compose up -d --build"
