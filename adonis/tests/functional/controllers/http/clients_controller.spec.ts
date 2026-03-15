@@ -7,6 +7,8 @@ import { ProductFactory } from '#database/factories/product_factory'
 import { TransactionFactory } from '#database/factories/transaction_factory'
 import { TransactionProductFactory } from '#database/factories/transaction_product_factory'
 import { TransactionStatusEnum } from '#domain/enums/transactions/transaction_status.enum'
+import { UserFactory } from '#database/factories/user_factory'
+import { RoleEnum } from '#enums/auth/role.enum'
 
 const CLIENTS_BASE_URL = '/api/v1/clients'
 
@@ -33,6 +35,8 @@ async function cleanupClients() {
   await db.from('products').delete()
   await db.from('gateways').delete()
   await db.from('clients').delete()
+  await db.from('auth_access_tokens').delete()
+  await db.from('users').delete()
 }
 
 test.group('ClientsController | functional', (group) => {
@@ -48,15 +52,34 @@ test.group('ClientsController | functional', (group) => {
 
   group.each.timeout(10000)
 
-  test('lists clients publicly', async ({ client }) => {
+  test('rejects guests when listing clients', async ({ client }) => {
     await ClientFactory.create()
 
     const response = await client.get(CLIENTS_BASE_URL)
 
+    response.assertStatus(401)
+  })
+
+  test('lists clients for authenticated users', async ({ client }) => {
+    const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
+    await ClientFactory.create()
+
+    const response = await client.get(CLIENTS_BASE_URL).loginAs(user)
+
     response.assertStatus(200)
   })
 
+  test('rejects finance users when listing clients', async ({ client }) => {
+    const finance = await UserFactory.merge({ role: RoleEnum.FINANCE }).create()
+    await ClientFactory.create()
+
+    const response = await client.get(CLIENTS_BASE_URL).loginAs(finance)
+
+    response.assertStatus(403)
+  })
+
   test('shows a client with serialized transactions only', async ({ client }) => {
+    const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
     const clientRecord = await ClientFactory.create()
     const gateway = await GatewayFactory.merge({
       name: 'gateway 2',
@@ -82,7 +105,7 @@ test.group('ClientsController | functional', (group) => {
       quantity: 2,
     }).create()
 
-    const response = await client.get(`${CLIENTS_BASE_URL}/${clientRecord.id}`)
+    const response = await client.get(`${CLIENTS_BASE_URL}/${clientRecord.id}`).loginAs(user)
 
     response.assertStatus(200)
     response.assertBody({
@@ -120,5 +143,14 @@ test.group('ClientsController | functional', (group) => {
         },
       ],
     })
+  })
+
+  test('rejects finance users when showing a client', async ({ client }) => {
+    const finance = await UserFactory.merge({ role: RoleEnum.FINANCE }).create()
+    const clientRecord = await ClientFactory.create()
+
+    const response = await client.get(`${CLIENTS_BASE_URL}/${clientRecord.id}`).loginAs(finance)
+
+    response.assertStatus(403)
   })
 })

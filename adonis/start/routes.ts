@@ -108,11 +108,17 @@ router
 
     router
       .group(() => {
-        router.get('/', [controllers.http.Clients, 'index'])
-        router.get('/:id', [controllers.http.Clients, 'show'])
+        router
+          .get('/', [controllers.http.Clients, 'index'])
+          .use(middleware.client({ abilities: ['readAll'] }))
+
+        router
+          .get('/:id', [controllers.http.Clients, 'show'])
+          .use(middleware.client({ abilities: ['read'] }))
       })
       .prefix('clients')
       .as('clients')
+      .use(middleware.auth())
 
     router
       .group(() => {
