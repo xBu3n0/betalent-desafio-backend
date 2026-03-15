@@ -1,9 +1,11 @@
 import User from '#models/auth/user'
 import { loginValidator } from '#validators/user'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
 import UserTransformer from '#transformers/user_transformer'
-import type UserService from '#services/auth/user.service'
+import UserService from '#services/auth/user.service'
 
+@inject()
 export default class AccessTokenController {
   constructor(private readonly userService: UserService) {}
 

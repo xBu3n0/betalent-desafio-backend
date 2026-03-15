@@ -4,10 +4,8 @@ type ParamValue = string | number | bigint | boolean
 
 export type ScannedRoutes = {
   ALL: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
     'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
     'users.users.index': { paramsTuple?: []; params?: {} }
     'users.users.store': { paramsTuple?: []; params?: {} }
     'users.users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -28,8 +26,15 @@ export type ScannedRoutes = {
     'transactions.transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
+  POST: {
+    'auth.access_token.store': { paramsTuple?: []; params?: {} }
+    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
+    'users.users.store': { paramsTuple?: []; params?: {} }
+    'products.products.store': { paramsTuple?: []; params?: {} }
+    'purchases.store': { paramsTuple?: []; params?: {} }
+    'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
   GET: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
     'users.users.index': { paramsTuple?: []; params?: {} }
     'users.users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'gateways.gateways.index': { paramsTuple?: []; params?: {} }
@@ -41,7 +46,6 @@ export type ScannedRoutes = {
     'transactions.transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   HEAD: {
-    'profile.profile.show': { paramsTuple?: []; params?: {} }
     'users.users.index': { paramsTuple?: []; params?: {} }
     'users.users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'gateways.gateways.index': { paramsTuple?: []; params?: {} }
@@ -51,15 +55,6 @@ export type ScannedRoutes = {
     'clients.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-  }
-  POST: {
-    'auth.new_account.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
-    'users.users.store': { paramsTuple?: []; params?: {} }
-    'products.products.store': { paramsTuple?: []; params?: {} }
-    'purchases.store': { paramsTuple?: []; params?: {} }
-    'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PATCH: {
     'users.users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
