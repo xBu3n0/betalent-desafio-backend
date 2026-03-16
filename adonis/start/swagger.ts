@@ -57,7 +57,11 @@ function normalizeSchema(schema: unknown): void {
     }
   }
 
-  if (typedSchema.type === 'object' && typedSchema.properties && !Array.isArray(typedSchema.properties)) {
+  if (
+    typedSchema.type === 'object' &&
+    typedSchema.properties &&
+    !Array.isArray(typedSchema.properties)
+  ) {
     const required = new Set(Array.isArray(typedSchema.required) ? typedSchema.required : [])
     const properties = typedSchema.properties as Record<string, Record<string, unknown>>
 
@@ -76,7 +80,11 @@ function normalizeSchema(schema: unknown): void {
       delete typedSchema.required
     }
 
-    if (typedSchema.example && typeof typedSchema.example === 'object' && !Array.isArray(typedSchema.example)) {
+    if (
+      typedSchema.example &&
+      typeof typedSchema.example === 'object' &&
+      !Array.isArray(typedSchema.example)
+    ) {
       typedSchema.example = normalizeExampleObject(
         typedSchema.example as Record<string, unknown>,
         properties
@@ -264,10 +272,7 @@ function normalizeContentExample(
   }
 }
 
-function resolveSchemaReference(
-  schema: Record<string, unknown>,
-  schemas: Record<string, unknown>
-) {
+function resolveSchemaReference(schema: Record<string, unknown>, schemas: Record<string, unknown>) {
   if (typeof schema.$ref !== 'string') {
     return schema
   }

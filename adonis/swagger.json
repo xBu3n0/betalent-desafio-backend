@@ -106,9 +106,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "description": "MessageResponse (Interface)"
       },
       "ErrorItem": {
@@ -135,9 +133,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "description": "ErrorItem (Interface)"
       },
       "ErrorResponse": {
@@ -151,9 +147,7 @@
             }
           }
         },
-        "required": [
-          "errors"
-        ],
+        "required": ["errors"],
         "description": "ErrorResponse (Interface)"
       },
       "UserResource": {
@@ -175,11 +169,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "id",
-          "email",
-          "role"
-        ],
+        "required": ["id", "email", "role"],
         "description": "UserResource (Interface)"
       },
       "AuthPayload": {
@@ -195,10 +185,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "user",
-          "token"
-        ],
+        "required": ["user", "token"],
         "description": "AuthPayload (Interface)"
       },
       "AuthResponse": {
@@ -209,9 +196,7 @@
             "$ref": "#/components/schemas/AuthPayload"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "AuthResponse (Interface)"
       },
       "UserResponse": {
@@ -222,9 +207,7 @@
             "$ref": "#/components/schemas/UserResource"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "UserResponse (Interface)"
       },
       "UserCollectionResponse": {
@@ -238,9 +221,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "UserCollectionResponse (Interface)"
       },
       "GatewayResource": {
@@ -267,12 +248,7 @@
             "example": 340
           }
         },
-        "required": [
-          "id",
-          "name",
-          "isActive",
-          "priority"
-        ],
+        "required": ["id", "name", "isActive", "priority"],
         "description": "GatewayResource (Interface)"
       },
       "GatewayResponse": {
@@ -283,9 +259,7 @@
             "$ref": "#/components/schemas/GatewayResource"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "GatewayResponse (Interface)"
       },
       "GatewayCollectionResponse": {
@@ -299,9 +273,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "GatewayCollectionResponse (Interface)"
       },
       "ProductResource": {
@@ -323,11 +295,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "amount"
-        ],
+        "required": ["id", "name", "amount"],
         "description": "ProductResource (Interface)"
       },
       "ProductResponse": {
@@ -338,9 +306,7 @@
             "$ref": "#/components/schemas/ProductResource"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "ProductResponse (Interface)"
       },
       "ProductCollectionResponse": {
@@ -354,9 +320,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "ProductCollectionResponse (Interface)"
       },
       "ClientResource": {
@@ -378,11 +342,7 @@
             "example": "Lorem Ipsum"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "email"
-        ],
+        "required": ["id", "name", "email"],
         "description": "ClientResource (Interface)"
       },
       "ClientCollectionResponse": {
@@ -396,9 +356,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "ClientCollectionResponse (Interface)"
       },
       "TransactionResource": {
@@ -462,9 +420,7 @@
             }
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "TransactionCollectionResponse (Interface)"
       },
       "TransactionItemResource": {
@@ -480,10 +436,7 @@
             "$ref": "#/components/schemas/ProductResource"
           }
         },
-        "required": [
-          "quantity",
-          "product"
-        ],
+        "required": ["quantity", "product"],
         "description": "TransactionItemResource (Interface)"
       },
       "TransactionDetailsResource": {
@@ -550,9 +503,7 @@
             "$ref": "#/components/schemas/TransactionDetailsResource"
           }
         },
-        "required": [
-          "data"
-        ],
+        "required": ["data"],
         "description": "TransactionDetailsResponse (Interface)"
       },
       "ClientDetailsResource": {
@@ -581,12 +532,7 @@
             }
           }
         },
-        "required": [
-          "id",
-          "name",
-          "email",
-          "transactions"
-        ],
+        "required": ["id", "name", "email", "transactions"],
         "description": "ClientDetailsResource (Interface)"
       },
       "User": {
@@ -697,9 +643,7 @@
           "priority": 1
         },
         "description": "updateGatewayPriorityValidator (Validator)",
-        "required": [
-          "priority"
-        ]
+        "required": ["priority"]
       },
       "updateGatewayStatusValidator": {
         "type": "object",
@@ -713,9 +657,7 @@
           "isActive": true
         },
         "description": "updateGatewayStatusValidator (Validator)",
-        "required": [
-          "isActive"
-        ]
+        "required": ["isActive"]
       },
       "createProductValidator": {
         "type": "object",
@@ -737,10 +679,7 @@
           "amount": "Lorem Ipsum"
         },
         "description": "createProductValidator (Validator)",
-        "required": [
-          "name",
-          "amount"
-        ]
+        "required": ["name", "amount"]
       },
       "updateProductValidator": {
         "type": "object",
@@ -802,10 +741,7 @@
                   "example": 835
                 }
               },
-              "required": [
-                "productId",
-                "quantity"
-              ]
+              "required": ["productId", "quantity"]
             }
           }
         },
@@ -822,13 +758,7 @@
           ]
         },
         "description": "createPurchaseValidator (Validator)",
-        "required": [
-          "name",
-          "email",
-          "cardNumber",
-          "cvv",
-          "items"
-        ]
+        "required": ["name", "email", "cardNumber", "cvv", "items"]
       },
       "listTransactionsValidator": {
         "type": "object",
@@ -836,12 +766,7 @@
           "status": {
             "type": "string",
             "example": "pending",
-            "enum": [
-              "pending",
-              "authorized",
-              "failed",
-              "refunded"
-            ]
+            "enum": ["pending", "authorized", "failed", "refunded"]
           },
           "clientId": {
             "type": "number",
@@ -882,12 +807,7 @@
           "role": {
             "type": "string",
             "example": "ADMIN",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "FINANCE",
-              "USER"
-            ]
+            "enum": ["ADMIN", "MANAGER", "FINANCE", "USER"]
           }
         },
         "example": {
@@ -897,12 +817,7 @@
           "role": "ADMIN"
         },
         "description": "createUserValidator (Validator)",
-        "required": [
-          "email",
-          "password",
-          "passwordConfirmation",
-          "role"
-        ]
+        "required": ["email", "password", "passwordConfirmation", "role"]
       },
       "loginValidator": {
         "type": "object",
@@ -922,10 +837,7 @@
           "password": "Lorem Ipsum"
         },
         "description": "loginValidator (Validator)",
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "updateUserValidator": {
         "type": "object",
@@ -944,12 +856,7 @@
           "role": {
             "type": "string",
             "example": "ADMIN",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "FINANCE",
-              "USER"
-            ]
+            "enum": ["ADMIN", "MANAGER", "FINANCE", "USER"]
           }
         },
         "example": {
@@ -967,9 +874,7 @@
         "summary": "Authenticate a user and issue an access token (store)",
         "description": "\n\n _app/adapters/controllers/http/access_token_controller.ts_ - **store**",
         "parameters": [],
-        "tags": [
-          "AUTHENTICATION"
-        ],
+        "tags": ["AUTHENTICATION"],
         "responses": {
           "200": {
             "content": {
@@ -1028,9 +933,7 @@
         "summary": "List users (index)",
         "description": "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/users_controller.ts_ - **index**",
         "parameters": [],
-        "tags": [
-          "USERS"
-        ],
+        "tags": ["USERS"],
         "responses": {
           "200": {
             "content": {
@@ -1094,9 +997,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       },
@@ -1104,9 +1005,7 @@
         "summary": "Create a new user (store)",
         "description": "\n\n _app/adapters/controllers/http/users_controller.ts_ - **store**",
         "parameters": [],
-        "tags": [
-          "USERS"
-        ],
+        "tags": ["USERS"],
         "responses": {
           "200": {
             "content": {
@@ -1186,9 +1085,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -1224,9 +1121,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "USERS"
-        ],
+        "tags": ["USERS"],
         "responses": {
           "200": {
             "content": {
@@ -1308,9 +1203,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       },
@@ -1329,9 +1222,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "USERS"
-        ],
+        "tags": ["USERS"],
         "responses": {
           "200": {
             "content": {
@@ -1433,9 +1324,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -1468,9 +1357,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "USERS"
-        ],
+        "tags": ["USERS"],
         "responses": {
           "200": {
             "content": {
@@ -1548,9 +1435,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -1560,9 +1445,7 @@
         "summary": "List gateways (index)",
         "description": "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/gateways_controller.ts_ - **index**",
         "parameters": [],
-        "tags": [
-          "GATEWAYS"
-        ],
+        "tags": ["GATEWAYS"],
         "responses": {
           "200": {
             "content": {
@@ -1627,9 +1510,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -1650,9 +1531,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "GATEWAYS"
-        ],
+        "tags": ["GATEWAYS"],
         "responses": {
           "200": {
             "content": {
@@ -1755,9 +1634,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -1790,9 +1667,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "GATEWAYS"
-        ],
+        "tags": ["GATEWAYS"],
         "responses": {
           "200": {
             "content": {
@@ -1895,9 +1770,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -1919,9 +1792,7 @@
         "summary": "List products (index)",
         "description": "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/products_controller.ts_ - **index**",
         "parameters": [],
-        "tags": [
-          "PRODUCTS"
-        ],
+        "tags": ["PRODUCTS"],
         "responses": {
           "200": {
             "content": {
@@ -1985,9 +1856,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       },
@@ -1995,9 +1864,7 @@
         "summary": "Create a product (store)",
         "description": "\n\n _app/adapters/controllers/http/products_controller.ts_ - **store**",
         "parameters": [],
-        "tags": [
-          "PRODUCTS"
-        ],
+        "tags": ["PRODUCTS"],
         "responses": {
           "200": {
             "content": {
@@ -2079,9 +1946,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -2115,9 +1980,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "PRODUCTS"
-        ],
+        "tags": ["PRODUCTS"],
         "responses": {
           "200": {
             "content": {
@@ -2199,9 +2062,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       },
@@ -2220,9 +2081,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "PRODUCTS"
-        ],
+        "tags": ["PRODUCTS"],
         "responses": {
           "200": {
             "content": {
@@ -2324,9 +2183,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ],
         "requestBody": {
@@ -2358,9 +2215,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "PRODUCTS"
-        ],
+        "tags": ["PRODUCTS"],
         "responses": {
           "200": {
             "content": {
@@ -2438,9 +2293,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -2450,9 +2303,7 @@
         "summary": "Create a public purchase (store)",
         "description": "\n\n _app/adapters/controllers/http/purchases_controller.ts_ - **store**",
         "parameters": [],
-        "tags": [
-          "PURCHASES"
-        ],
+        "tags": ["PURCHASES"],
         "responses": {
           "200": {
             "content": {
@@ -2543,9 +2394,7 @@
         "summary": "List clients (index)",
         "description": "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/clients_controller.ts_ - **index**",
         "parameters": [],
-        "tags": [
-          "CLIENTS"
-        ],
+        "tags": ["CLIENTS"],
         "responses": {
           "200": {
             "content": {
@@ -2609,9 +2458,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -2632,9 +2479,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "CLIENTS"
-        ],
+        "tags": ["CLIENTS"],
         "responses": {
           "200": {
             "content": {
@@ -2723,9 +2568,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -2766,9 +2609,7 @@
             "required": false
           }
         ],
-        "tags": [
-          "TRANSACTIONS"
-        ],
+        "tags": ["TRANSACTIONS"],
         "responses": {
           "200": {
             "content": {
@@ -2856,9 +2697,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -2879,9 +2718,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "TRANSACTIONS"
-        ],
+        "tags": ["TRANSACTIONS"],
         "responses": {
           "200": {
             "content": {
@@ -2965,9 +2802,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }
@@ -2988,9 +2823,7 @@
             "required": true
           }
         ],
-        "tags": [
-          "TRANSACTIONS"
-        ],
+        "tags": ["TRANSACTIONS"],
         "responses": {
           "200": {
             "content": {
@@ -3094,9 +2927,7 @@
         },
         "security": [
           {
-            "BearerAuth": [
-              "access"
-            ]
+            "BearerAuth": ["access"]
           }
         ]
       }

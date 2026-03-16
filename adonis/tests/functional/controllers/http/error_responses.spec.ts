@@ -47,7 +47,10 @@ test.group('Error responses | functional', (group) => {
     await cleanupData()
   })
 
-  test('returns guest authentication failures inside an errors array', async ({ client, assert }) => {
+  test('returns guest authentication failures inside an errors array', async ({
+    client,
+    assert,
+  }) => {
     const response = await client.get(GATEWAYS_BASE_URL)
 
     response.assertStatus(401)
@@ -80,7 +83,10 @@ test.group('Error responses | functional', (group) => {
 
     assert.isArray(body.errors)
     assert.isAtLeast(body.errors.length, 1)
-    assert.include(body.errors.map((error) => error.field), 'priority')
+    assert.include(
+      body.errors.map((error) => error.field),
+      'priority'
+    )
   })
 
   test('returns domain exceptions inside an errors array', async ({ client, assert }) => {
