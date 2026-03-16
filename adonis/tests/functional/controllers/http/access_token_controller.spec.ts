@@ -104,9 +104,9 @@ test.group('AccessTokenController | functional', (group) => {
       errors: Array<{ field?: string }>
     }
 
-    assert.includeMembers(
-      body.errors.map((error) => error.field).filter(Boolean),
-      ['email', 'password']
-    )
+    assert.includeMembers(body.errors.map((error) => error.field).filter(Boolean), [
+      'email',
+      'password',
+    ])
   })
 })

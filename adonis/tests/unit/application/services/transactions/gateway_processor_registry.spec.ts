@@ -1,8 +1,5 @@
 import { test } from '@japa/runner'
-import type {
-  ChargeGatewayInput,
-  GatewayChargeResult,
-} from '#application/gateways/payment_gateway'
+import type { ChargeGatewayInput, GatewayChargeResult } from '#application/gateways/payment_gateway'
 import type PaymentGateway from '#application/gateways/payment_gateway'
 import GatewayEntity from '#domain/entities/shared/gateway.entity'
 import GatewayProcessorNotConfiguredException from '#domain/exceptions/transactions/gateway_processor_not_configured.exception'

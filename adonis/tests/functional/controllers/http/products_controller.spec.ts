@@ -116,10 +116,10 @@ test.group('ProductsController | functional', (group) => {
       errors: Array<{ field?: string }>
     }
 
-    assert.includeMembers(
-      body.errors.map((error) => error.field).filter(Boolean),
-      ['name', 'amount']
-    )
+    assert.includeMembers(body.errors.map((error) => error.field).filter(Boolean), [
+      'name',
+      'amount',
+    ])
   })
 
   test('shows a product for authenticated users', async ({ client }) => {
@@ -147,10 +147,13 @@ test.group('ProductsController | functional', (group) => {
     const product = await ProductFactory.merge({ name: 'Notebook', amount: '15.50' }).create()
 
     // when
-    const response = await client.patch(`${PRODUCTS_BASE_URL}/${product.id}`).loginAs(finance).json({
-      name: 'Notebook Pro',
-      amount: '29.90',
-    })
+    const response = await client
+      .patch(`${PRODUCTS_BASE_URL}/${product.id}`)
+      .loginAs(finance)
+      .json({
+        name: 'Notebook Pro',
+        amount: '29.90',
+      })
 
     // then
     response.assertStatus(200)
