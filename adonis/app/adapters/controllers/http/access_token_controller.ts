@@ -9,6 +9,14 @@ import UserService from '#services/auth/user.service'
 export default class AccessTokenController {
   constructor(private readonly userService: UserService) {}
 
+  /**
+   * @store
+   * @summary Authenticate a user and issue an access token
+   * @tag Authentication
+   * @requestBody <loginValidator>
+   * @responseBody 200 - <AuthResponse>
+   * @responseBody 401 - <ErrorResponse>
+   */
   async store({ request, serialize }: HttpContext) {
     const { email, password } = await request.validateUsing(loginValidator)
 
@@ -20,6 +28,13 @@ export default class AccessTokenController {
     })
   }
 
+  /**
+   * @destroy
+   * @summary Revoke the current access token
+   * @tag Authentication
+   * @responseBody 200 - <MessageResponse>
+   * @responseBody 401 - <ErrorResponse>
+   */
   async destroy({ auth }: HttpContext) {
     const user = auth.getUserOrFail()
     if (user.currentAccessToken) {

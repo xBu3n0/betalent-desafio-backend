@@ -8,3 +8,4 @@
 /// <reference path="../../config/gateways.ts" />
 /// <reference path="../../config/hash.ts" />
 /// <reference path="../../config/logger.ts" />
+/// <reference path="../../config/swagger.ts" />

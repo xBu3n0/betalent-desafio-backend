@@ -108,7 +108,7 @@ export default defineConfig({
   | the production build.
   |
   */
-  metaFiles: [],
+  metaFiles: ['swagger.yml', 'swagger.json'],
 
   hooks: {
     init: [

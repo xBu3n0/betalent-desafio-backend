@@ -5,7 +5,6 @@ type ParamValue = string | number | bigint | boolean
 export type ScannedRoutes = {
   ALL: {
     'auth.access_token.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
     'users.users.index': { paramsTuple?: []; params?: {} }
     'users.users.store': { paramsTuple?: []; params?: {} }
     'users.users.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
@@ -24,14 +23,6 @@ export type ScannedRoutes = {
     'clients.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-    'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
-  }
-  POST: {
-    'auth.access_token.store': { paramsTuple?: []; params?: {} }
-    'auth.access_token.destroy': { paramsTuple?: []; params?: {} }
-    'users.users.store': { paramsTuple?: []; params?: {} }
-    'products.products.store': { paramsTuple?: []; params?: {} }
-    'purchases.store': { paramsTuple?: []; params?: {} }
     'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   GET: {
@@ -55,6 +46,13 @@ export type ScannedRoutes = {
     'clients.clients.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'transactions.transactions.index': { paramsTuple?: []; params?: {} }
     'transactions.transactions.show': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+  }
+  POST: {
+    'auth.access_token.store': { paramsTuple?: []; params?: {} }
+    'users.users.store': { paramsTuple?: []; params?: {} }
+    'products.products.store': { paramsTuple?: []; params?: {} }
+    'purchases.store': { paramsTuple?: []; params?: {} }
+    'transactions.transactions.refund': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
   }
   PATCH: {
     'users.users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

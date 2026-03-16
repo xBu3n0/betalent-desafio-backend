@@ -19,18 +19,6 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/http/access_token_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
     }
   }
-  'auth.access_token.destroy': {
-    methods: ["POST"]
-    pattern: '/api/v1/auth/logout'
-    types: {
-      body: {}
-      paramsTuple: []
-      params: {}
-      query: {}
-      response: ExtractResponse<Awaited<ReturnType<import('#controllers/http/access_token_controller').default['destroy']>>>
-      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/http/access_token_controller').default['destroy']>>>
-    }
-  }
   'users.users.index': {
     methods: ["GET","HEAD"]
     pattern: '/api/v1/users'

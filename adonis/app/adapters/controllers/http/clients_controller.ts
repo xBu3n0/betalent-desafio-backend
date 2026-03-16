@@ -8,12 +8,30 @@ import TransactionDetailsTransformer from '#transformers/transaction_details_tra
 export default class ClientsController {
   constructor(private readonly clientService: ClientService) {}
 
+  /**
+   * @index
+   * @summary List clients
+   * @tag Clients
+   * @responseBody 200 - <ClientCollectionResponse>
+   * @responseBody 401 - <ErrorResponse>
+   * @responseBody 403 - <ErrorResponse>
+   */
   async index({ serialize }: HttpContext) {
     const clients = await this.clientService.listClients()
 
     return serialize(ClientTransformer.transform(clients))
   }
 
+  /**
+   * @show
+   * @summary Show a client with transaction history
+   * @tag Clients
+   * @paramPath id - Client id - @type(number) @required
+   * @responseBody 200 - <ClientDetailsResource>
+   * @responseBody 401 - <ErrorResponse>
+   * @responseBody 403 - <ErrorResponse>
+   * @responseBody 404 - <ErrorResponse>
+   */
   async show({ params, serialize }: HttpContext) {
     const result = await this.clientService.getById(Number(params.id))
     const serializedClient = await serialize(ClientTransformer.transform(result.client))
@@ -21,9 +39,9 @@ export default class ClientsController {
       TransactionDetailsTransformer.transform(result.transactions)
     )
 
-    return {
+    return serialize({
       ...serializedClient.data,
       transactions: serializedTransactions.data,
-    }
+    })
   }
 }

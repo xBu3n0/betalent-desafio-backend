@@ -1,0 +1,2071 @@
+openapi: "3.0.0"
+info:
+  title: "BeTalent Payments API"
+  version: "1.0.0"
+  description: "REST API for payment processing with gateway fallback and role-based access."
+components:
+  responses:
+    Forbidden:
+      description: "Access token is missing or invalid"
+    Accepted:
+      description: "The request was accepted"
+    Created:
+      description: "The resource has been created"
+    NotFound:
+      description: "The resource has been created"
+    NotAcceptable:
+      description: "The resource has been created"
+  securitySchemes:
+    BearerAuth:
+      type: "http"
+      scheme: "bearer"
+    BasicAuth:
+      type: "http"
+      scheme: "basic"
+    ApiKeyAuth:
+      type: "apiKey"
+      in: "header"
+      name: "X-API-Key"
+  schemas:
+    Any:
+      description: "Any JSON object not defined as schema"
+    PaginationMeta:
+      type: "object"
+      properties:
+        total:
+          type: "number"
+          example: 100
+          nullable: false
+        page:
+          type: "number"
+          example: 2
+          nullable: false
+        perPage:
+          type: "number"
+          example: 10
+          nullable: false
+        currentPage:
+          type: "number"
+          example: 3
+          nullable: false
+        lastPage:
+          type: "number"
+          example: 10
+          nullable: false
+        firstPage:
+          type: "number"
+          example: 1
+          nullable: false
+        lastPageUrl:
+          type: "string"
+          example: "/?page=10"
+          nullable: false
+        firstPageUrl:
+          type: "string"
+          example: "/?page=1"
+          nullable: false
+        nextPageUrl:
+          type: "string"
+          example: "/?page=6"
+          nullable: false
+        previousPageUrl:
+          type: "string"
+          example: "/?page=5"
+          nullable: false
+    MessageResponse:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "message"
+      description: "MessageResponse (Interface)"
+    ErrorItem:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        field:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        rule:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        code:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "message"
+      description: "ErrorItem (Interface)"
+    ErrorResponse:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/ErrorItem"
+      required:
+        - "errors"
+      description: "ErrorResponse (Interface)"
+    UserResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 3
+        email:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        role:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "id"
+        - "email"
+        - "role"
+      description: "UserResource (Interface)"
+    AuthPayload:
+      type: "object"
+      properties:
+        user:
+          nullable: false
+          $ref: "#/components/schemas/UserResource"
+        token:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "user"
+        - "token"
+      description: "AuthPayload (Interface)"
+    AuthResponse:
+      type: "object"
+      properties:
+        data:
+          nullable: false
+          $ref: "#/components/schemas/AuthPayload"
+      required:
+        - "data"
+      description: "AuthResponse (Interface)"
+    UserResponse:
+      type: "object"
+      properties:
+        data:
+          nullable: false
+          $ref: "#/components/schemas/UserResource"
+      required:
+        - "data"
+      description: "UserResponse (Interface)"
+    UserCollectionResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/UserResource"
+      required:
+        - "data"
+      description: "UserCollectionResponse (Interface)"
+    GatewayResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 554
+        name:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        isActive:
+          type: "boolean"
+          nullable: false
+          example: true
+        priority:
+          type: "number"
+          nullable: false
+          example: 340
+      required:
+        - "id"
+        - "name"
+        - "isActive"
+        - "priority"
+      description: "GatewayResource (Interface)"
+    GatewayResponse:
+      type: "object"
+      properties:
+        data:
+          nullable: false
+          $ref: "#/components/schemas/GatewayResource"
+      required:
+        - "data"
+      description: "GatewayResponse (Interface)"
+    GatewayCollectionResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/GatewayResource"
+      required:
+        - "data"
+      description: "GatewayCollectionResponse (Interface)"
+    ProductResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 978
+        name:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        amount:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "id"
+        - "name"
+        - "amount"
+      description: "ProductResource (Interface)"
+    ProductResponse:
+      type: "object"
+      properties:
+        data:
+          nullable: false
+          $ref: "#/components/schemas/ProductResource"
+      required:
+        - "data"
+      description: "ProductResponse (Interface)"
+    ProductCollectionResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/ProductResource"
+      required:
+        - "data"
+      description: "ProductCollectionResponse (Interface)"
+    ClientResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 809
+        name:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        email:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "id"
+        - "name"
+        - "email"
+      description: "ClientResource (Interface)"
+    ClientCollectionResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/ClientResource"
+      required:
+        - "data"
+      description: "ClientCollectionResponse (Interface)"
+    TransactionResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 282
+        clientId:
+          type: "number"
+          nullable: false
+          example: 126
+        gatewayId:
+          type: "number"
+          nullable: false
+          example: 344
+        externalId:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        status:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        amount:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        cardLastNumbers:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+      required:
+        - "id"
+        - "clientId"
+        - "gatewayId"
+        - "externalId"
+        - "status"
+        - "amount"
+        - "cardLastNumbers"
+      description: "TransactionResource (Interface)"
+    TransactionCollectionResponse:
+      type: "object"
+      properties:
+        data:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/TransactionResource"
+      required:
+        - "data"
+      description: "TransactionCollectionResponse (Interface)"
+    TransactionItemResource:
+      type: "object"
+      properties:
+        quantity:
+          type: "number"
+          nullable: false
+          example: 145
+        product:
+          nullable: false
+          $ref: "#/components/schemas/ProductResource"
+      required:
+        - "quantity"
+        - "product"
+      description: "TransactionItemResource (Interface)"
+    TransactionDetailsResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 41
+        externalId:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        status:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        amount:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        cardLastNumbers:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        client:
+          nullable: false
+          $ref: "#/components/schemas/ClientResource"
+        gateway:
+          nullable: false
+          $ref: "#/components/schemas/GatewayResource"
+        items:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/TransactionItemResource"
+      required:
+        - "id"
+        - "externalId"
+        - "status"
+        - "amount"
+        - "cardLastNumbers"
+        - "client"
+        - "gateway"
+        - "items"
+      description: "TransactionDetailsResource (Interface)"
+    TransactionDetailsResponse:
+      type: "object"
+      properties:
+        data:
+          nullable: false
+          $ref: "#/components/schemas/TransactionDetailsResource"
+      required:
+        - "data"
+      description: "TransactionDetailsResponse (Interface)"
+    ClientDetailsResource:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          nullable: false
+          example: 502
+        name:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        email:
+          type: "string"
+          nullable: false
+          example: "Lorem Ipsum"
+        transactions:
+          type: "array"
+          items:
+            nullable: false
+            $ref: "#/components/schemas/TransactionDetailsResource"
+      required:
+        - "id"
+        - "name"
+        - "email"
+        - "transactions"
+      description: "ClientDetailsResource (Interface)"
+    User:
+      type: "object"
+      properties:
+        currentAccessToken?:
+          $ref: "#/components/schemas/AccessToken"
+          example: null
+      description: "User (Model)"
+    Client:
+      type: "object"
+      properties:
+        transactions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Transaction"
+            example: null
+      description: "Client (Model)"
+    Gateway:
+      type: "object"
+      properties:
+        isActive:
+          type: "boolean"
+          example: true
+        transactions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Transaction"
+            example: null
+      description: "Gateway (Model)"
+    Product:
+      type: "object"
+      properties:
+        transactions:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Transaction"
+            example: null
+      description: "Product (Model)"
+    Transaction:
+      type: "object"
+      properties:
+        client:
+          $ref: "#/components/schemas/Client"
+          example: null
+        gateway:
+          $ref: "#/components/schemas/Gateway"
+          example: null
+        transactionProducts:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/TransactionProduct"
+            example: null
+        products:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Product"
+            example: null
+      description: "Transaction (Model)"
+    TransactionProduct:
+      type: "object"
+      properties:
+        transaction:
+          $ref: "#/components/schemas/Transaction"
+          example: null
+        product:
+          $ref: "#/components/schemas/Product"
+          example: null
+      description: "TransactionProduct (Model)"
+    updateGatewayPriorityValidator:
+      type: "object"
+      properties:
+        priority:
+          type: "number"
+          example: 1
+          minimum: 1
+      example:
+        priority: 1
+      description: "updateGatewayPriorityValidator (Validator)"
+      required:
+        - "priority"
+    updateGatewayStatusValidator:
+      type: "object"
+      properties:
+        isActive:
+          type: "boolean"
+          example: true
+      example:
+        isActive: true
+      description: "updateGatewayStatusValidator (Validator)"
+      required:
+        - "isActive"
+    createProductValidator:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 1
+          maxLength: 255
+        amount:
+          type: "string"
+          example: "Lorem Ipsum"
+          pattern: "/^\\d+\\.\\d{2}$/"
+      example:
+        name: "Lorem Ipsum"
+        amount: "Lorem Ipsum"
+      description: "createProductValidator (Validator)"
+      required:
+        - "name"
+        - "amount"
+    updateProductValidator:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 1
+          maxLength: 255
+        amount:
+          type: "string"
+          example: "Lorem Ipsum"
+          pattern: "/^\\d+\\.\\d{2}$/"
+      example:
+        name: "Lorem Ipsum"
+        amount: "Lorem Ipsum"
+      description: "updateProductValidator (Validator)"
+    createPurchaseValidator:
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 1
+          maxLength: 255
+        email:
+          type: "string"
+          example: "Lorem Ipsum"
+          pattern: "/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/"
+          maxLength: 254
+        cardNumber:
+          type: "string"
+          example: "Lorem Ipsum"
+          pattern: "/^\\d{16}$/"
+        cvv:
+          type: "string"
+          example: "Lorem Ipsum"
+          pattern: "/^\\d{3}$/"
+        items:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              productId:
+                type: "number"
+                example: 69
+              quantity:
+                type: "number"
+                example: 835
+            required:
+              - "productId"
+              - "quantity"
+      example:
+        name: "Lorem Ipsum"
+        email: "Lorem Ipsum"
+        cardNumber: "Lorem Ipsum"
+        cvv: "Lorem Ipsum"
+        items:
+          - productId: 69
+            quantity: 835
+      description: "createPurchaseValidator (Validator)"
+      required:
+        - "name"
+        - "email"
+        - "cardNumber"
+        - "cvv"
+        - "items"
+    listTransactionsValidator:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+          example: "pending"
+          enum:
+            - "pending"
+            - "authorized"
+            - "failed"
+            - "refunded"
+        clientId:
+          type: "number"
+          example: 540
+        gatewayId:
+          type: "number"
+          example: 34
+      example:
+        status: "pending"
+        clientId: 540
+        gatewayId: 34
+      description: "listTransactionsValidator (Validator)"
+    createUserValidator:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          example: "Lorem Ipsum"
+          maxLength: 254
+        password:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 8
+          maxLength: 32
+        passwordConfirmation:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 8
+          maxLength: 32
+        role:
+          type: "string"
+          example: "ADMIN"
+          enum:
+            - "ADMIN"
+            - "MANAGER"
+            - "FINANCE"
+            - "USER"
+      example:
+        email: "Lorem Ipsum"
+        password: "Lorem Ipsum"
+        passwordConfirmation: "Lorem Ipsum"
+        role: "ADMIN"
+      description: "createUserValidator (Validator)"
+      required:
+        - "email"
+        - "password"
+        - "passwordConfirmation"
+        - "role"
+    loginValidator:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          example: "Lorem Ipsum"
+          maxLength: 254
+        password:
+          type: "string"
+          example: "Lorem Ipsum"
+      example:
+        email: "Lorem Ipsum"
+        password: "Lorem Ipsum"
+      description: "loginValidator (Validator)"
+      required:
+        - "email"
+        - "password"
+    updateUserValidator:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          example: "Lorem Ipsum"
+          maxLength: 254
+        password:
+          type: "string"
+          example: "Lorem Ipsum"
+          minLength: 8
+          maxLength: 32
+        role:
+          type: "string"
+          example: "ADMIN"
+          enum:
+            - "ADMIN"
+            - "MANAGER"
+            - "FINANCE"
+            - "USER"
+      example:
+        email: "Lorem Ipsum"
+        password: "Lorem Ipsum"
+        role: "ADMIN"
+      description: "updateUserValidator (Validator)"
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: "Authenticate a user and issue an access token (store)"
+      description: "\n\n _app/adapters/controllers/http/access_token_controller.ts_ - **store**"
+      parameters: []
+      tags:
+        - "AUTHENTICATION"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+              example:
+                data:
+                  token: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginValidator"
+            example:
+              email: "Lorem Ipsum"
+              password: "Lorem Ipsum"
+  /api/v1/users:
+    get:
+      summary: "List users (index)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/users_controller.ts_ - **index**"
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserCollectionResponse"
+              example:
+                data:
+                  - id: 3
+                    email: "Lorem Ipsum"
+                    role: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: "Create a new user (store)"
+      description: "\n\n _app/adapters/controllers/http/users_controller.ts_ - **store**"
+      parameters: []
+      tags:
+        - "USERS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+              example:
+                data:
+                  token: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUserValidator"
+            example:
+              email: "Lorem Ipsum"
+              password: "Lorem Ipsum"
+              passwordConfirmation: "Lorem Ipsum"
+              role: "ADMIN"
+  /api/v1/users/{id}:
+    get:
+      summary: "Show a user by id (show)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/users_controller.ts_ - **show**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "User id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+              example:
+                data:
+                  id: 3
+                  email: "Lorem Ipsum"
+                  role: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+    patch:
+      summary: "Update a user by id (update)"
+      description: "\n\n _app/adapters/controllers/http/users_controller.ts_ - **update**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "User id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+              example:
+                data:
+                  id: 3
+                  email: "Lorem Ipsum"
+                  role: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateUserValidator"
+            example:
+              email: "Lorem Ipsum"
+              password: "Lorem Ipsum"
+              role: "ADMIN"
+    delete:
+      summary: "Delete a user by id (destroy)"
+      description: "\n\n _app/adapters/controllers/http/users_controller.ts_ - **destroy**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "User id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "USERS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/gateways:
+    get:
+      summary: "List gateways (index)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/gateways_controller.ts_ - **index**"
+      parameters: []
+      tags:
+        - "GATEWAYS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayCollectionResponse"
+              example:
+                data:
+                  - id: 554
+                    name: "Lorem Ipsum"
+                    isActive: true
+                    priority: 340
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/gateways/{id}/status:
+    patch:
+      summary: "Update the activation status of a gateway (updateStatus)"
+      description: "\n\n _app/adapters/controllers/http/gateways_controller.ts_ - **updateStatus**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Gateway id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "GATEWAYS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayResponse"
+              example:
+                data:
+                  id: 554
+                  name: "Lorem Ipsum"
+                  isActive: true
+                  priority: 340
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateGatewayStatusValidator"
+            example:
+              isActive: true
+  /api/v1/gateways/{id}/priority:
+    patch:
+      summary: "Update the priority of a gateway (updatePriority)"
+      description: "\n\n _app/adapters/controllers/http/gateways_controller.ts_ - **updatePriority**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Gateway id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "GATEWAYS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayResponse"
+              example:
+                data:
+                  id: 554
+                  name: "Lorem Ipsum"
+                  isActive: true
+                  priority: 340
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateGatewayPriorityValidator"
+            example:
+              priority: 1
+  /api/v1/products:
+    get:
+      summary: "List products (index)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/products_controller.ts_ - **index**"
+      parameters: []
+      tags:
+        - "PRODUCTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductCollectionResponse"
+              example:
+                data:
+                  - id: 978
+                    name: "Lorem Ipsum"
+                    amount: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+    post:
+      summary: "Create a product (store)"
+      description: "\n\n _app/adapters/controllers/http/products_controller.ts_ - **store**"
+      parameters: []
+      tags:
+        - "PRODUCTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+              example:
+                data:
+                  id: 978
+                  name: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createProductValidator"
+            example:
+              name: "Lorem Ipsum"
+              amount: "Lorem Ipsum"
+  /api/v1/products/{id}:
+    get:
+      summary: "Show a product by id (show)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/products_controller.ts_ - **show**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Product id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "PRODUCTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+              example:
+                data:
+                  id: 978
+                  name: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+    patch:
+      summary: "Update a product by id (update)"
+      description: "\n\n _app/adapters/controllers/http/products_controller.ts_ - **update**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Product id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "PRODUCTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+              example:
+                data:
+                  id: 978
+                  name: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateProductValidator"
+            example:
+              name: "Lorem Ipsum"
+              amount: "Lorem Ipsum"
+    delete:
+      summary: "Delete a product by id (destroy)"
+      description: "\n\n _app/adapters/controllers/http/products_controller.ts_ - **destroy**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Product id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "PRODUCTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+              example:
+                message: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/purchases:
+    post:
+      summary: "Create a public purchase (store)"
+      description: "\n\n _app/adapters/controllers/http/purchases_controller.ts_ - **store**"
+      parameters: []
+      tags:
+        - "PURCHASES"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetailsResponse"
+              example:
+                data:
+                  id: 41
+                  externalId: "Lorem Ipsum"
+                  status: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+                  cardLastNumbers: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createPurchaseValidator"
+            example:
+              name: "Lorem Ipsum"
+              email: "Lorem Ipsum"
+              cardNumber: "Lorem Ipsum"
+              cvv: "Lorem Ipsum"
+              items:
+                - productId: 69
+                  quantity: 835
+  /api/v1/clients:
+    get:
+      summary: "List clients (index)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/clients_controller.ts_ - **index**"
+      parameters: []
+      tags:
+        - "CLIENTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientCollectionResponse"
+              example:
+                data:
+                  - id: 809
+                    name: "Lorem Ipsum"
+                    email: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/clients/{id}:
+    get:
+      summary: "Show a client with transaction history (show)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/clients_controller.ts_ - **show**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Client id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "CLIENTS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientDetailsResource"
+              example:
+                id: 502
+                name: "Lorem Ipsum"
+                email: "Lorem Ipsum"
+                transactions:
+                  - id: 41
+                    externalId: "Lorem Ipsum"
+                    status: "Lorem Ipsum"
+                    amount: "Lorem Ipsum"
+                    cardLastNumbers: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/transactions:
+    get:
+      summary: "List transactions (index)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/transactions_controller.ts_ - **index**"
+      parameters:
+        - in: "query"
+          name: "status"
+          description: "Filter by transaction status"
+          schema:
+            example: ""
+            type: "string"
+          required: false
+        - in: "query"
+          name: "clientId"
+          description: "Filter by client id"
+          schema:
+            example: ""
+            type: "number"
+          required: false
+        - in: "query"
+          name: "gatewayId"
+          description: "Filter by gateway id"
+          schema:
+            example: ""
+            type: "number"
+          required: false
+      tags:
+        - "TRANSACTIONS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionCollectionResponse"
+              example:
+                data:
+                  - id: 282
+                    clientId: 126
+                    gatewayId: 344
+                    externalId: "Lorem Ipsum"
+                    status: "Lorem Ipsum"
+                    amount: "Lorem Ipsum"
+                    cardLastNumbers: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/transactions/{id}:
+    get:
+      summary: "Show transaction details by id (show)"
+      description: "Returns **200** (OK) as **application/json**\n\n _app/adapters/controllers/http/transactions_controller.ts_ - **show**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Transaction id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "TRANSACTIONS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetailsResponse"
+              example:
+                data:
+                  id: 41
+                  externalId: "Lorem Ipsum"
+                  status: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+                  cardLastNumbers: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+  /api/v1/transactions/{id}/refund:
+    post:
+      summary: "Refund an authorized transaction (refund)"
+      description: "\n\n _app/adapters/controllers/http/transactions_controller.ts_ - **refund**"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Transaction id"
+          schema:
+            example: ""
+            type: "number"
+          required: true
+      tags:
+        - "TRANSACTIONS"
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionDetailsResponse"
+              example:
+                data:
+                  id: 41
+                  externalId: "Lorem Ipsum"
+                  status: "Lorem Ipsum"
+                  amount: "Lorem Ipsum"
+                  cardLastNumbers: "Lorem Ipsum"
+          description: "Returns **200** (OK) as **application/json**"
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **401** (Unauthorized) as **application/json**"
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **403** (Forbidden) as **application/json**"
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **404** (Not Found) as **application/json**"
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                errors:
+                  - message: "Lorem Ipsum"
+                    field: "Lorem Ipsum"
+                    rule: "Lorem Ipsum"
+                    code: "Lorem Ipsum"
+          description: "Returns **422** (Unprocessable Entity) as **application/json**"
+      security:
+        - BearerAuth:
+            - "access"
+tags:
+  - name: "AUTHENTICATION"
+    description: "Everything related to AUTHENTICATION"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "USERS"
+    description: "Everything related to USERS"
+  - name: "GATEWAYS"
+    description: "Everything related to GATEWAYS"
+  - name: "GATEWAYS"
+    description: "Everything related to GATEWAYS"
+  - name: "GATEWAYS"
+    description: "Everything related to GATEWAYS"
+  - name: "GATEWAYS"
+    description: "Everything related to GATEWAYS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PRODUCTS"
+    description: "Everything related to PRODUCTS"
+  - name: "PURCHASES"
+    description: "Everything related to PURCHASES"
+  - name: "PURCHASES"
+    description: "Everything related to PURCHASES"
+  - name: "CLIENTS"
+    description: "Everything related to CLIENTS"
+  - name: "CLIENTS"
+    description: "Everything related to CLIENTS"
+  - name: "CLIENTS"
+    description: "Everything related to CLIENTS"
+  - name: "TRANSACTIONS"
+    description: "Everything related to TRANSACTIONS"
+  - name: "TRANSACTIONS"
+    description: "Everything related to TRANSACTIONS"
+  - name: "TRANSACTIONS"
+    description: "Everything related to TRANSACTIONS"
+  - name: "TRANSACTIONS"
+    description: "Everything related to TRANSACTIONS"

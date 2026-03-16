@@ -10,10 +10,23 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 import { controllers } from '#generated/controllers'
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
+import { generateSwaggerYaml } from '#start/swagger'
 
 // router.get('/', () => {
 //   return { hello: 'world' }
 // })
+
+router.get('/swagger', async ({ response }) => {
+  response.type('text/yaml')
+  return generateSwaggerYaml()
+})
+
+router.get('/docs', async ({ response }) => {
+  response.type('text/html')
+  return AutoSwagger.default.ui('/swagger', swagger)
+})
 
 router
   .group(() => {

@@ -8,6 +8,15 @@ import { createPurchaseValidator } from '#validators/purchase'
 export default class PurchasesController {
   constructor(private readonly transactionService: TransactionService) {}
 
+  /**
+   * @store
+   * @summary Create a public purchase
+   * @tag Purchases
+   * @requestBody <createPurchaseValidator>
+   * @responseBody 200 - <TransactionDetailsResponse>
+   * @responseBody 404 - <ErrorResponse>
+   * @responseBody 422 - <ErrorResponse>
+   */
   async store({ request, serialize }: HttpContext) {
     const payload = await request.validateUsing(createPurchaseValidator)
 

@@ -9,6 +9,7 @@ API REST para processamento de pagamentos com multi-gateway, controle de acesso 
 - [Sobre a escolha do AdonisJS](#sobre-a-escolha-do-adonisjs)
 - [Requisitos](#requisitos)
 - [Estrutura do projeto](#estrutura-do-projeto)
+- [Diagrama do banco](#diagrama-do-banco)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Como instalar e rodar o projeto](#como-instalar-e-rodar-o-projeto)
   - [Opção 1: stack completa com Docker](#opção-1-stack-completa-com-docker)
@@ -38,15 +39,16 @@ O projeto implementa um fluxo de compra público. Ao receber uma compra, a API:
 
 ## Stack utilizada
 
-| Tecnologia | Para que é usada no projeto |
-| --- | --- |
-| AdonisJS 7 | Framework principal da API REST, organização da aplicação, rotas, providers e ciclo de execução |
-| TypeScript | Tipagem estática, contratos mais seguros e melhor manutenção do código |
-| MySQL | Persistência de usuários, gateways, compras e transações |
-| Lucid ORM | Mapeamento entre models e banco de dados, além de consultas, migrations e seeders |
-| VineJS | Validação de payloads recebidos pela API |
-| Japa | Execução dos testes automatizados |
-| Docker Compose | Orquestração da stack local com API, bancos MySQL e mocks de gateway |
+| Tecnologia     | Para que é usada no projeto                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------- |
+| AdonisJS 7     | Framework principal da API REST, organização da aplicação, rotas, providers e ciclo de execução |
+| TypeScript     | Tipagem estática, contratos mais seguros e melhor manutenção do código                          |
+| MySQL          | Persistência de usuários, gateways, compras e transações                                        |
+| Lucid ORM      | Mapeamento entre models e banco de dados, além de consultas, migrations e seeders               |
+| VineJS         | Validação de payloads recebidos pela API                                                        |
+| Japa           | Execução dos testes automatizados                                                               |
+| Swagger/OpenAPI | Documentação interativa da API em `/docs` e especificação OpenAPI em `/swagger`                |
+| Docker Compose | Orquestração da stack local com API, bancos MySQL e mocks de gateway                            |
 
 ## Sobre a escolha do AdonisJS
 
@@ -79,6 +81,95 @@ A maior parte da minha experiência prática está em Laravel e no ecossistema P
 - `adonis/app/infrastructure`: models, repositórios e clientes HTTP dos gateways
 - `adonis/database`: migrations, factories e seeders
 - `adonis/tests`: testes unitários e funcionais
+
+## Diagrama do banco
+
+O diagrama abaixo foi montado a partir das migrations em `adonis/database/migrations` e representa todas as tabelas persistidas pela aplicação.
+
+```mermaid
+erDiagram
+    users {
+        int id PK
+        string email UK
+        string password
+        enum role
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    auth_access_tokens {
+        int id PK
+        int tokenable_id FK
+        string type
+        string name
+        string hash
+        text abilities
+        timestamp created_at
+        timestamp updated_at
+        timestamp last_used_at
+        timestamp expires_at
+    }
+
+    clients {
+        int id PK
+        string name
+        string email UK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    gateways {
+        int id PK
+        string provider UK
+        string name
+        boolean is_active
+        int priority
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    products {
+        int id PK
+        string name
+        decimal amount
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    transactions {
+        int id PK
+        int client_id FK
+        int gateway_id FK
+        string external_id UK
+        enum status
+        int amount
+        string card_last_numbers
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    transaction_products {
+        int id PK
+        int transaction_id FK
+        int product_id FK
+        int quantity
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    users ||--o{ auth_access_tokens : has
+    clients ||--o{ transactions : places
+    gateways ||--o{ transactions : processes
+    transactions ||--o{ transaction_products : contains
+    products ||--o{ transaction_products : references
+```
+
+Leitura rápida das relações:
+
+- `users` possui vários `auth_access_tokens`
+- `clients` possui várias `transactions`
+- `gateways` processa várias `transactions`
+- `transaction_products` faz a ligação N:N entre `transactions` e `products`, armazenando também a `quantity`
 
 ## Variáveis de ambiente
 
@@ -143,7 +234,9 @@ docker compose up -d --build
 
 3. Acesse os serviços:
 
-- API: `http://localhost:3333`
+- API: `http://localhost:${API_PORT}` (`3333` por padrão no `.env.example`)
+- Swagger UI: `http://localhost:${API_PORT}/docs`
+- OpenAPI YAML: `http://localhost:${API_PORT}/swagger`
 - Gateway mock 1: `http://localhost:3001`
 - Gateway mock 2: `http://localhost:3002`
 - MySQL principal: `localhost:3306`
@@ -191,6 +284,12 @@ node ace db:seed
 npm run dev
 ```
 
+6. Acesse a aplicação e a documentação:
+
+- API local: `http://localhost:${PORT}` (`3333` por padrão no `adonis/.env.local.example`)
+- Swagger UI local: `http://localhost:${PORT}/docs`
+- OpenAPI YAML local: `http://localhost:${PORT}/swagger`
+
 Se alguma dessas portas for alterada na stack, ajuste também o `adonis/.env`.
 
 ## Scripts úteis
@@ -207,6 +306,8 @@ Se alguma dessas portas for alterada na stack, ajuste também o `adonis/.env`.
 ### Dentro de `adonis/`
 
 - `npm run dev`: sobe a API em modo desenvolvimento
+- `npm run dev:doc`: sobe a API em modo desenvolvimento usando `serve --watch`, útil ao validar a documentação Swagger durante o desenvolvimento
+- `npm run docs:generate`: gera os arquivos `swagger.yml` e `swagger.json`
 - `npm run build`: gera o build da aplicação
 - `npm run start`: sobe a aplicação compilada
 - `npm test`: executa os testes
@@ -238,6 +339,30 @@ Todas as rotas usam o prefixo `/api/v1`.
   - `POST /api/v1/purchases`
 - Demais rotas exigem `Authorization: Bearer <token>`
 
+## Documentação Swagger
+
+A aplicação expõe a documentação interativa e o arquivo OpenAPI nos seguintes endpoints:
+
+- `GET /docs`: interface Swagger UI
+- `GET /swagger`: especificação OpenAPI em YAML
+
+Formas de acesso mais comuns:
+
+- Rodando a API localmente: `http://localhost:3333/docs` e `http://localhost:3333/swagger`
+- Rodando a stack Docker: `http://localhost:3333/docs` e `http://localhost:3333/swagger` com a configuração padrão do `.env.example`
+
+Se você alterar as portas:
+
+- Ambiente local: use a porta definida em `PORT` no arquivo `adonis/.env`
+- Docker: use a porta definida em `API_PORT` no arquivo `.env`
+
+Para gerar os artefatos de documentação usados no build de produção:
+
+```bash
+cd adonis
+npm run docs:generate
+```
+
 ## Formato de resposta
 
 A maior parte das respostas de sucesso da API segue o padrão:
@@ -256,6 +381,20 @@ Ou, para coleções:
 }
 ```
 
+Exemplos nesse formato:
+
+- `POST /api/v1/auth/login`
+- `GET /api/v1/users`
+- `POST /api/v1/users`
+- `GET /api/v1/gateways`
+- `GET /api/v1/products`
+- `POST /api/v1/purchases`
+
+Exceções atuais:
+
+- endpoints de remoção retornam `{ "message": "..." }`
+- `GET /api/v1/clients/:id` retorna o cliente e o histórico diretamente no objeto raiz
+
 ## Formato de erro
 
 As respostas de erro também são retornadas em JSON.
@@ -271,7 +410,25 @@ Formato de erro:
 
 ```json
 {
-  "errors": []
+  "errors": [
+    {
+      "message": "..."
+    }
+  ]
+}
+```
+
+Para erros de validação, os itens também podem incluir metadados adicionais, como:
+
+```json
+{
+  "errors": [
+    {
+      "message": "...",
+      "field": "priority",
+      "rule": "min"
+    }
+  ]
 }
 ```
 
@@ -288,20 +445,23 @@ Como não foi informada uma relação de hierarquia entre as roles, as permissõ
 
 ### Autenticação
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| POST | `/api/v1/auth/login` | Pública | Body: `email`, `password` |
-| POST | `/api/v1/auth/logout` | Qualquer autenticado | Invalida o token atual |
+| Método | Rota                 | Acesso  | Payload / observações     |
+| ------ | -------------------- | ------- | ------------------------- |
+| POST   | `/api/v1/auth/login` | Pública | Body: `email`, `password` |
+
+Observação:
+
+- a action de logout existe no controller, mas não há rota exposta para ela no estado atual da aplicação
 
 ### Usuários
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| GET | `/api/v1/users` | `ADMIN`, `MANAGER` | Lista usuários |
-| POST | `/api/v1/users` | `ADMIN`, `MANAGER` | Body: `email`, `password`, `passwordConfirmation`, `role` |
-| GET | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Busca usuário por id |
-| PATCH | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Body opcional: `email`, `password`, `role` |
-| DELETE | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Remove usuário |
+| Método | Rota                | Acesso             | Payload / observações                                     |
+| ------ | ------------------- | ------------------ | --------------------------------------------------------- |
+| GET    | `/api/v1/users`     | `ADMIN`, `MANAGER` | Lista usuários                                            |
+| POST   | `/api/v1/users`     | `ADMIN`, `MANAGER` | Body: `email`, `password`, `passwordConfirmation`, `role` |
+| GET    | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Busca usuário por id                                      |
+| PATCH  | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Body opcional: `email`, `password`, `role`                |
+| DELETE | `/api/v1/users/:id` | `ADMIN`, `MANAGER` | Remove usuário                                            |
 
 Restrições adicionais para `MANAGER`:
 
@@ -316,21 +476,21 @@ Observação:
 
 ### Gateways
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| GET | `/api/v1/gateways` | Qualquer autenticado | Lista gateways com `id`, `name`, `isActive`, `priority` |
-| PATCH | `/api/v1/gateways/:id/status` | Qualquer autenticado | Body: `isActive` |
-| PATCH | `/api/v1/gateways/:id/priority` | Qualquer autenticado | Body: `priority` inteiro maior ou igual a `1` |
+| Método | Rota                            | Acesso               | Payload / observações                                   |
+| ------ | ------------------------------- | -------------------- | ------------------------------------------------------- |
+| GET    | `/api/v1/gateways`              | Qualquer autenticado | Lista gateways com `id`, `name`, `isActive`, `priority` |
+| PATCH  | `/api/v1/gateways/:id/status`   | Qualquer autenticado | Body: `isActive`                                        |
+| PATCH  | `/api/v1/gateways/:id/priority` | Qualquer autenticado | Body: `priority` inteiro maior ou igual a `1`           |
 
 ### Produtos
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| GET | `/api/v1/products` | `ADMIN`, `MANAGER`, `FINANCE`, `USER` | Lista produtos |
-| POST | `/api/v1/products` | `ADMIN`, `MANAGER`, `FINANCE` | Body: `name`, `amount` |
-| GET | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE`, `USER` | Busca produto por id |
-| PATCH | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE` | Body opcional: `name`, `amount` |
-| DELETE | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE` | Remove produto |
+| Método | Rota                   | Acesso                                | Payload / observações           |
+| ------ | ---------------------- | ------------------------------------- | ------------------------------- |
+| GET    | `/api/v1/products`     | `ADMIN`, `MANAGER`, `FINANCE`, `USER` | Lista produtos                  |
+| POST   | `/api/v1/products`     | `ADMIN`, `MANAGER`, `FINANCE`         | Body: `name`, `amount`          |
+| GET    | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE`, `USER` | Busca produto por id            |
+| PATCH  | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE`         | Body opcional: `name`, `amount` |
+| DELETE | `/api/v1/products/:id` | `ADMIN`, `MANAGER`, `FINANCE`         | Remove produto                  |
 
 Observação:
 
@@ -338,9 +498,9 @@ Observação:
 
 ### Compras
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| POST | `/api/v1/purchases` | Pública | Body: `name`, `email`, `cardNumber`, `cvv`, `items[]` |
+| Método | Rota                | Acesso  | Payload / observações                                 |
+| ------ | ------------------- | ------- | ----------------------------------------------------- |
+| POST   | `/api/v1/purchases` | Pública | Body: `name`, `email`, `cardNumber`, `cvv`, `items[]` |
 
 Formato esperado de `items[]`:
 
@@ -370,18 +530,18 @@ Comportamento da rota:
 
 ### Clientes
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| GET | `/api/v1/clients` | `ADMIN`, `USER` | Lista clientes |
-| GET | `/api/v1/clients/:id` | `ADMIN`, `USER` | Retorna cliente e histórico detalhado de transações |
+| Método | Rota                  | Acesso          | Payload / observações                               |
+| ------ | --------------------- | --------------- | --------------------------------------------------- |
+| GET    | `/api/v1/clients`     | `ADMIN`, `USER` | Lista clientes                                      |
+| GET    | `/api/v1/clients/:id` | `ADMIN`, `USER` | Retorna cliente e histórico detalhado de transações |
 
 ### Transações
 
-| Método | Rota | Acesso | Payload / observações |
-| --- | --- | --- | --- |
-| GET | `/api/v1/transactions` | `ADMIN`, `FINANCE` | Filtros opcionais via query string: `status`, `clientId`, `gatewayId` |
-| GET | `/api/v1/transactions/:id` | `ADMIN`, `FINANCE` | Retorna detalhes da transação, cliente, gateway e itens |
-| POST | `/api/v1/transactions/:id/refund` | `ADMIN`, `FINANCE` | Reembolsa apenas transações em status `authorized` |
+| Método | Rota                              | Acesso             | Payload / observações                                                 |
+| ------ | --------------------------------- | ------------------ | --------------------------------------------------------------------- |
+| GET    | `/api/v1/transactions`            | `ADMIN`, `FINANCE` | Filtros opcionais via query string: `status`, `clientId`, `gatewayId` |
+| GET    | `/api/v1/transactions/:id`        | `ADMIN`, `FINANCE` | Retorna detalhes da transação, cliente, gateway e itens               |
+| POST   | `/api/v1/transactions/:id/refund` | `ADMIN`, `FINANCE` | Reembolsa apenas transações em status `authorized`                    |
 
 Valores aceitos para `status` no filtro:
 

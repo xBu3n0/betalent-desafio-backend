@@ -5,7 +5,6 @@ export interface ApiDefinition {
   auth: {
     accessToken: {
       store: typeof routes['auth.access_token.store']
-      destroy: typeof routes['auth.access_token.destroy']
     }
   }
   users: {
