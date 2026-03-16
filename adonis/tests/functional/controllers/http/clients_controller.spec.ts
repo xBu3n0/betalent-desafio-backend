@@ -53,32 +53,42 @@ test.group('ClientsController | functional', (group) => {
   group.each.timeout(10000)
 
   test('rejects guests when listing clients', async ({ client }) => {
+    // given
     await ClientFactory.create()
 
+    // when
     const response = await client.get(CLIENTS_BASE_URL)
 
+    // then
     response.assertStatus(401)
   })
 
   test('lists clients for authenticated users', async ({ client }) => {
+    // given
     const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
     await ClientFactory.create()
 
+    // when
     const response = await client.get(CLIENTS_BASE_URL).loginAs(user)
 
+    // then
     response.assertStatus(200)
   })
 
   test('lists clients for finance users', async ({ client }) => {
+    // given
     const finance = await UserFactory.merge({ role: RoleEnum.FINANCE }).create()
     await ClientFactory.create()
 
+    // when
     const response = await client.get(CLIENTS_BASE_URL).loginAs(finance)
 
+    // then
     response.assertStatus(200)
   })
 
   test('shows a client with serialized transactions only', async ({ client }) => {
+    // given
     const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
     const clientRecord = await ClientFactory.create()
     const gateway = await GatewayFactory.merge({
@@ -105,52 +115,59 @@ test.group('ClientsController | functional', (group) => {
       quantity: 2,
     }).create()
 
+    // when
     const response = await client.get(`${CLIENTS_BASE_URL}/${clientRecord.id}`).loginAs(user)
 
+    // then
     response.assertStatus(200)
     response.assertBody({
-      id: clientRecord.id,
-      name: clientRecord.name,
-      email: clientRecord.email,
-      transactions: [
-        {
-          id: transaction.id,
-          externalId: 'ada5ec8d-b01f-4e0c-8a1e-cbdd8a8261df',
-          status: TransactionStatusEnum.AUTHORIZED,
-          amount: '20.00',
-          cardLastNumbers: '6063',
-          client: {
-            id: clientRecord.id,
-            name: clientRecord.name,
-            email: clientRecord.email,
-          },
-          gateway: {
-            id: gateway.id,
-            name: gateway.name,
-            isActive: gateway.isActive,
-            priority: gateway.priority,
-          },
-          items: [
-            {
-              quantity: 2,
-              product: {
-                id: product.id,
-                name: product.name,
-                amount: '10.00',
-              },
+      data: {
+        id: clientRecord.id,
+        name: clientRecord.name,
+        email: clientRecord.email,
+        transactions: [
+          {
+            id: transaction.id,
+            externalId: 'ada5ec8d-b01f-4e0c-8a1e-cbdd8a8261df',
+            status: TransactionStatusEnum.AUTHORIZED,
+            amount: '20.00',
+            cardLastNumbers: '6063',
+            client: {
+              id: clientRecord.id,
+              name: clientRecord.name,
+              email: clientRecord.email,
             },
-          ],
-        },
-      ],
+            gateway: {
+              id: gateway.id,
+              name: gateway.name,
+              isActive: gateway.isActive,
+              priority: gateway.priority,
+            },
+            items: [
+              {
+                quantity: 2,
+                product: {
+                  id: product.id,
+                  name: product.name,
+                  amount: '10.00',
+                },
+              },
+            ],
+          },
+        ],
+      },
     })
   })
 
   test('shows a client for finance users', async ({ client }) => {
+    // given
     const finance = await UserFactory.merge({ role: RoleEnum.FINANCE }).create()
     const clientRecord = await ClientFactory.create()
 
+    // when
     const response = await client.get(`${CLIENTS_BASE_URL}/${clientRecord.id}`).loginAs(finance)
 
+    // then
     response.assertStatus(200)
   })
 })

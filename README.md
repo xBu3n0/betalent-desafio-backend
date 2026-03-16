@@ -82,6 +82,29 @@ A maior parte da minha experiência prática está em Laravel e no ecossistema P
 - `adonis/database`: migrations, factories e seeders
 - `adonis/tests`: testes unitários e funcionais
 
+Visão em árvore da hierarquia principal:
+
+```text
+.
+|-- compose.yml
+|-- scripts
+|   |-- init-env.sh
+|   `-- start-stack.sh
+`-- adonis
+    |-- app
+    |   |-- adapters
+    |   |-- application
+    |   |-- domain
+    |   `-- infrastructure
+    |-- database
+    |   |-- factories
+    |   |-- migrations
+    |   `-- seeders
+    `-- tests
+        |-- functional
+        `-- unit
+```
+
 ## Diagrama do banco
 
 O diagrama abaixo foi montado a partir das migrations em `adonis/database/migrations` e representa todas as tabelas persistidas pela aplicação.
@@ -598,7 +621,7 @@ A estratégia foi inspirada no livro `Unit Testing Principles, Practices, and Pa
 
 Na prática, isso significa que os testes buscaram exercitar middlewares, classes reais e banco de dados de forma integrada, preservando o máximo possível do comportamento real do sistema. O mock foi mantido apenas nos gateways externos, por serem dependências fora do meu controle e com respostas não determinísticas.
 
-No estado atual do projeto, a suíte possui 229 testes automatizados cobrindo principalmente:
+No estado atual do projeto, a suíte possui 254 testes automatizados cobrindo principalmente:
 
 - primitives, entidades e regras centrais de domínio
 - autenticação e controle de acesso por perfil

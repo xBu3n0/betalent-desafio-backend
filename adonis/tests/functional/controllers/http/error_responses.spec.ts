@@ -51,8 +51,12 @@ test.group('Error responses | functional', (group) => {
     client,
     assert,
   }) => {
+    // given
+
+    // when
     const response = await client.get(GATEWAYS_BASE_URL)
 
+    // then
     response.assertStatus(401)
 
     const body = response.body() as unknown as {
@@ -65,9 +69,11 @@ test.group('Error responses | functional', (group) => {
   })
 
   test('returns validation failures inside an errors array', async ({ client, assert }) => {
+    // given
     const manager = await UserFactory.merge({ role: RoleEnum.MANAGER }).create()
     const gateway = await GatewayFactory.merge({ priority: 1, isActive: true }).create()
 
+    // when
     const response = await client
       .patch(`${GATEWAYS_BASE_URL}/${gateway.id}/priority`)
       .loginAs(manager)
@@ -75,6 +81,7 @@ test.group('Error responses | functional', (group) => {
         priority: 0,
       })
 
+    // then
     response.assertStatus(422)
 
     const body = response.body() as unknown as {
@@ -90,8 +97,10 @@ test.group('Error responses | functional', (group) => {
   })
 
   test('returns domain exceptions inside an errors array', async ({ client, assert }) => {
+    // given
     const user = await UserFactory.merge({ role: RoleEnum.USER }).create()
 
+    // when
     const response = await client
       .patch(`${GATEWAYS_BASE_URL}/${MISSING_GATEWAY_ID}/status`)
       .loginAs(user)
@@ -99,6 +108,7 @@ test.group('Error responses | functional', (group) => {
         isActive: false,
       })
 
+    // then
     response.assertStatus(404)
 
     const body = response.body() as unknown as {
@@ -111,16 +121,19 @@ test.group('Error responses | functional', (group) => {
   })
 
   test('returns login failures inside an errors array', async ({ client, assert }) => {
+    // given
     await UserFactory.merge({
       email: 'admin@example.com',
       role: RoleEnum.ADMIN,
     }).create()
 
+    // when
     const response = await client.post(LOGIN_URL).json({
       email: 'admin@example.com',
       password: 'wrong-password',
     })
 
+    // then
     response.assertStatus(401)
 
     const body = response.body() as unknown as {

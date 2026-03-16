@@ -29,14 +29,24 @@ export function runIdPrimitiveTests<T extends IdPrimitiveInstance>({
   test(accepts.title)
     .with(accepts.values)
     .run(({ assert }, validId) => {
+      // given
+
+      // when
       const id = primitive.create(validId)
 
+      // then
       assert.equal(id.value, validId)
     })
 
   test(rejects.title)
     .with(rejects.values)
     .run(({ assert }, invalidId) => {
-      assert.throws(() => primitive.create(invalidId), InvalidDomainException)
+      // given
+
+      // when
+      const createPrimitive = () => primitive.create(invalidId)
+
+      // then
+      assert.throws(createPrimitive, InvalidDomainException)
     })
 }

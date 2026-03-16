@@ -29,14 +29,24 @@ export function runPrimitiveTests<TInput, TPrimitive extends PrimitiveInstance<T
   test(accepts.title)
     .with(accepts.values)
     .run(({ assert }, validValue) => {
+      // given
+
+      // when
       const createdPrimitive = primitive.create(validValue)
 
+      // then
       assert.equal(createdPrimitive.value, validValue)
     })
 
   test(rejects.title)
     .with(rejects.values)
     .run(({ assert }, invalidValue) => {
-      assert.throws(() => primitive.create(invalidValue), InvalidDomainException)
+      // given
+
+      // when
+      const createPrimitive = () => primitive.create(invalidValue)
+
+      // then
+      assert.throws(createPrimitive, InvalidDomainException)
     })
 }
