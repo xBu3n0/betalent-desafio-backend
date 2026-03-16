@@ -624,11 +624,18 @@ Na prática, isso significa que os testes buscaram exercitar middlewares, classe
 No estado atual do projeto, a suíte possui 254 testes automatizados cobrindo principalmente:
 
 - primitives, entidades e regras centrais de domínio
-- autenticação e controle de acesso por perfil
+- autenticação, login, emissão de token e controle de acesso por perfil
 - CRUD de usuários, produtos e gateways
-- fluxo de compra com cálculo interno, fallback entre gateways e persistência
+- fluxo de compra com cálculo interno, fallback entre gateways, seleção de processor e persistência
 - listagem e detalhamento de clientes e transações
 - reembolso e cenários de falha
+
+Resultado mais recente:
+
+```text
+PASSED
+Tests  254 passed (254)
+```
 
 Para executar os testes:
 
